@@ -570,26 +570,34 @@
   <header>
     <div class="brand">
       <h1>⚡ FLEETCAP</h1>
-      <p>Driver Capacity Prediction & Staffing Auditor • May-June 2026</p>
+      <p id="app-subtitle">Driver Capacity Prediction & Staffing Auditor • May-June 2026</p>
     </div>
     <div class="controls">
       <div class="control-group">
-        <span class="control-label">City</span>
+        <span class="control-label" id="label-city">City</span>
         <select id="city-selector">
           <!-- Dynamically populated -->
         </select>
       </div>
 
       <div class="control-group">
-        <span class="control-label">Forecast Week</span>
+        <span class="control-label" id="label-week">Forecast Week</span>
         <div class="week-selector" id="week-selector">
           <!-- Dynamically populated -->
         </div>
       </div>
 
       <div class="control-group">
-        <span class="control-label">Productivity Baseline (orders/hr)</span>
+        <span class="control-label" id="label-productivity">Productivity Baseline (orders/hr)</span>
         <input type="number" id="productivity-input" value="2.00" step="0.05" min="0.1" max="10.0" style="width: 110px; font-family: inherit;">
+      </div>
+
+      <div class="control-group">
+        <span class="control-label" id="lang-label">Language</span>
+        <select id="lang-selector">
+          <option value="en" selected>🇬🇧 EN</option>
+          <option value="ro">🇷🇴 RO</option>
+        </select>
       </div>
     </div>
   </header>
@@ -603,37 +611,37 @@
   <!-- Summary Cards -->
   <div class="metrics-grid">
     <div class="metric-card">
-      <div class="metric-header">Forecasted Orders (Demand)</div>
+      <div class="metric-header" id="metric-header-demand">Forecasted Orders (Demand)</div>
       <div class="metric-value" id="stat-forecast-demand">0</div>
       <div class="metric-sub" id="stat-forecast-date-range">dates</div>
     </div>
 
     <div class="metric-card">
-      <div class="metric-header">Estimated Capacity (Deliveries)</div>
+      <div class="metric-header" id="metric-header-capacity">Estimated Capacity (Deliveries)</div>
       <div class="metric-value" id="stat-estimated-capacity">0</div>
       <div class="metric-sub" id="stat-productivity-rate">Rate info</div>
     </div>
 
     <div class="metric-card">
-      <div class="metric-header">Surplus / Shortage</div>
+      <div class="metric-header" id="metric-header-surplus">Surplus / Shortage</div>
       <div class="metric-value" id="stat-net-surplus">0</div>
       <div class="metric-sub" id="stat-net-surplus-status">Status</div>
     </div>
 
     <div class="metric-card">
-      <div class="metric-header">Hiring & Staff Deficit</div>
+      <div class="metric-header" id="metric-header-hiring">Hiring & Staff Deficit</div>
       <div class="metric-value" id="stat-hiring-deficit">0 Drivers</div>
       <div class="metric-sub" id="stat-hiring-sub">0 deliveries deficit</div>
     </div>
 
     <div class="metric-card">
-      <div class="metric-header">Max Driver Needed (Weekly Peak)</div>
+      <div class="metric-header" id="metric-header-peak">Max Driver Needed (Weekly Peak)</div>
       <div class="metric-value" id="stat-max-drivers">0 Drivers</div>
       <div class="metric-sub" id="stat-max-drivers-time">Peak slot info</div>
     </div>
 
     <div class="metric-card recommendation-card">
-      <div class="metric-header" style="color: #2563eb;">💡 Weekly Operations Recommendation</div>
+      <div class="metric-header" id="metric-header-rec" style="color: #2563eb;">💡 Weekly Operations Recommendation</div>
       <div class="metric-value" style="font-size: 16px; font-weight: 500; letter-spacing: 0; line-height: 1.45; margin-top: 8px; color: #1e293b;" id="stat-staffing-rec">
         Calculating recommendation...
       </div>
@@ -671,44 +679,44 @@
         </div>
 
         <div>
-          <div class="panel-section-title">Operational metrics</div>
+          <div class="panel-section-title" id="panel-sec-metrics">Operational metrics</div>
           <div class="detail-row">
-            <span class="detail-label">Forecasted Demand (June)</span>
+            <span class="detail-label" id="label-val-demand">Forecasted Demand (June)</span>
             <span class="detail-val highlight" id="panel-val-demand">0</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Historical Completions (May)</span>
+            <span class="detail-label" id="label-val-historical">Historical Completions (May)</span>
             <span class="detail-val" id="panel-val-historical-completions">0</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Estimated Active Drivers</span>
+            <span class="detail-label" id="label-val-active">Estimated Active Drivers</span>
             <span class="detail-val highlight" id="panel-val-active-drivers">0</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Total Delivery Capacity</span>
+            <span class="detail-label" id="label-val-capacity">Total Delivery Capacity</span>
             <span class="detail-val" id="panel-val-capacity">0</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Capacity Net Balance</span>
+            <span class="detail-label" id="label-val-balance">Capacity Net Balance</span>
             <span class="detail-val highlight" id="panel-val-balance">0</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Drivers Needed</span>
+            <span class="detail-label" id="label-val-drivers-needed">Drivers Needed</span>
             <span class="detail-val" id="panel-val-drivers-needed">0</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Capacity Utilization</span>
+            <span class="detail-label" id="label-val-utilization">Capacity Utilization</span>
             <span class="detail-val highlight" id="panel-val-utilization">0%</span>
           </div>
         </div>
 
         <div>
-          <div class="panel-section-title">Mathematical audit path</div>
+          <div class="panel-section-title" id="panel-sec-math">Mathematical audit path</div>
           <div class="math-box" id="panel-math-box"></div>
         </div>
 
         <div>
-          <div class="panel-section-title">Explanation</div>
+          <div class="panel-section-title" id="panel-sec-explanation">Explanation</div>
           <div class="explanation-box" id="panel-explanation-text"></div>
         </div>
       </div>
@@ -722,6 +730,7 @@
     let currentWeekIdx = 0; // 0-indexed (Week 1 = 0)
     let currentProductivity = 2.0;
     let activeCellId = null;
+    let currentLang = 'en';
 
     const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -732,10 +741,207 @@
       TIME_SLOTS.push(`${hStr}:30`);
     }
 
+    const TRANSLATIONS = {
+      en: {
+        title: "FLEETCAP: Driver Capacity Prediction Model",
+        subtitle: "Driver Capacity Prediction & Staffing Auditor • May-June 2026",
+        labelCity: "City",
+        labelWeek: "Forecast Week",
+        labelProductivity: "Productivity Baseline (orders/hr)",
+        labelLanguage: "Language",
+        
+        // Warning banner
+        warningBanner: "⚠️ June Forecast not uploaded for {city}. Dashboard displays simulated forecast by scaling Berlin's profile (factor: {factor}%).",
+        
+        // Metrics
+        metricDemand: "Forecasted Orders (Demand)",
+        metricCapacity: "Estimated Capacity (Deliveries)",
+        metricSurplusShortage: "Surplus / Shortage",
+        metricHiringDeficit: "Hiring & Staff Deficit",
+        metricPeakDrivers: "Max Driver Needed (Weekly Peak)",
+        metricRecommendation: "💡 Weekly Operations Recommendation",
+        
+        // Subtexts
+        sufficientCapacity: "🟢 Sufficient Weekly Capacity",
+        staffingDeficit: "🔴 Staffing Deficit",
+        hiringDeficitSub: "Deficit: <span style=\"color: var(--color-red-text); font-weight: 600;\">{deficit} deliv</span> ({hours} hrs)",
+        fullyStaffed: "🟢 Fully staffed (0 deficit slots)",
+        peakSlotInfo: "Peak slot: {day} at {slot}",
+        rateInfo: "At {rate} deliveries/hr per active driver",
+        drivers: "Drivers",
+        driversAdditional: "additional",
+        calculating: "Calculating recommendation...",
+        
+        // Table Headers
+        colTime: "Time",
+        peakLabel: "Peak: {num} drivers",
+        
+        // Side Panel Placeholder
+        panelSelectSlot: "Select a Time Slot",
+        panelPlaceholderText: "Click any cell in the calendar grid to view detailed calculations, mathematical formulas, and historical audit logs.",
+        
+        // Side Panel Header
+        panelSlotDetails: "Slot Details",
+        panelForecastDate: "Forecast Date: {date}",
+        
+        // Side Panel Section Titles
+        panelSectionMetrics: "Operational metrics",
+        panelSectionMath: "Mathematical audit path",
+        panelSectionExplanation: "Explanation",
+        
+        // Detail Labels
+        detailDemand: "Forecasted Demand (June)",
+        detailHistorical: "Historical Completions (May)",
+        detailActiveDrivers: "Estimated Active Drivers",
+        detailCapacity: "Total Delivery Capacity",
+        detailBalance: "Capacity Net Balance",
+        detailDriversNeeded: "Drivers Needed",
+        detailUtilization: "Capacity Utilization",
+        
+        // Detail Suffixes
+        suffixDeliveries: "deliveries",
+        suffixMayAvg: "deliveries (May avg)",
+        suffixActive: "active",
+        suffixSurplus: "deliveries (surplus)",
+        suffixShortage: "deliveries (shortage)",
+        
+        // Recommendations
+        recOptimal: "🟢 <strong>Optimal Staffing:</strong> Capacity is fully sufficient across all slots. Current scheduled driver levels can handle the forecasted demand comfortably. Extra capacity can absorb <strong>{surplus}</strong> additional deliveries.",
+        recAlert: "⚠️ <strong>Shortage Alert:</strong> Sufficient overall capacity, but ",
+        recShortage: "🔴 <strong>Critical Shortage:</strong> Deficit of <strong>{deficit}</strong> deliveries. ",
+        recDeficitBody: "There are <strong>{slots}</strong> understaffed 30-minute intervals. Peak deficit occurs on <strong>{day} at {slot}</strong> (need <strong>+{needed}</strong> drivers). We recommend shifting schedules or hiring flex drivers for <strong>{worstDay}</strong> peaks.",
+        
+        // Math Box
+        mathCapacityHeader: "1. Estimated Capacity (C)",
+        mathCapacityFormula: "C = Active Drivers (N) &times; Productivity Rate (P_30)<br>C = {active} &times; ({prod} / 2)<br>C = {active} &times; {p30}<br><strong>C = {capacity} deliveries</strong>",
+        mathBalanceHeader: "2. Net Balance (S)",
+        mathBalanceFormula: "S = Capacity (C) - Demand (D)<br>S = {capacity} - {demand}<br><strong>S = {balance} deliveries</strong>",
+        mathAuditHeader: "3. Driver Audit",
+        mathAuditSurplus: "Surplus Drivers = S / P_30<br>Surplus = {balance} / {p30} = {surplus}<br><div class=\"math-result sufficient-result\">Result: +{result} excess drivers</div>",
+        mathAuditDeficit: "Drivers Needed = |S| / P_30<br>Needed = {balance} / {p30} = {deficit}<br><div class=\"math-result\">Result: -{result} drivers needed</div>",
+        
+        // Explanation Text
+        expSufficient: "We expect <strong>{demand}</strong> deliveries. Based on May activity, we anticipate an average of <strong>{active}</strong> active drivers. At {prod} deliveries/hr, this provides a capacity of <strong>{capacity}</strong> completed deliveries. Our fleet has sufficient capacity (surplus of <strong>+{balance}</strong> deliveries), leaving approximately <strong>+{excess}</strong> drivers available.",
+        expDeficit: "We expect <strong>{demand}</strong> deliveries. However, historical May data suggests only <strong>{active}</strong> active drivers will be on shift, giving a maximum delivery capacity of <strong>{capacity}</strong> orders. This results in an estimated shortage of <strong>{balance}</strong> deliveries. To prevent delayed orders, we recommend scheduling at least <strong>{add}</strong> additional driver(s) for this 30-minute block.",
+        
+        // Weekdays
+        days: {
+          Monday: "Monday",
+          Tuesday: "Tuesday",
+          Wednesday: "Wednesday",
+          Thursday: "Thursday",
+          Friday: "Friday",
+          Saturday: "Saturday",
+          Sunday: "Sunday"
+        }
+      },
+      ro: {
+        title: "FLEETCAP: Model de Prognoză pentru Capacitatea Șoferilor",
+        subtitle: "Prognoza Capacității Șoferilor și Auditor de Personal • Mai-Iunie 2026",
+        labelCity: "Oraș",
+        labelWeek: "Săptămână Prognoză",
+        labelProductivity: "Productivitate de Bază (comenzi/oră)",
+        labelLanguage: "Limbă",
+        
+        // Warning banner
+        warningBanner: "⚠️ Prognoza pentru Iunie nu a fost încărcată pentru {city}. Tabloul de bord afișează prognoza simulată prin scalarea profilului Berlinului (factor: {factor}%).",
+        
+        // Metrics
+        metricDemand: "Comenzi Prognozate (Cerere)",
+        metricCapacity: "Capacitate Estimată (Livrări)",
+        metricSurplusShortage: "Surplus / Deficit",
+        metricHiringDeficit: "Deficit Personal și Recrutare",
+        metricPeakDrivers: "Șoferi Maximi Necesar (Vârf Săptămânal)",
+        metricRecommendation: "💡 Recomandare Săptămânală de Operare",
+        
+        // Subtexts
+        sufficientCapacity: "🟢 Capacitate Săptămânală Suficientă",
+        staffingDeficit: "🔴 Deficit de Personal",
+        hiringDeficitSub: "Deficit: <span style=\"color: var(--color-red-text); font-weight: 600;\">{deficit} livrări</span> ({hours} ore)",
+        fullyStaffed: "🟢 Personal suficient (0 intervale cu deficit)",
+        peakSlotInfo: "Slot de vârf: {day} la {slot}",
+        rateInfo: "La {rate} livrări/oră per șofer activ",
+        drivers: "Șoferi",
+        driversAdditional: "suplimentari",
+        calculating: "Se calculează recomandarea...",
+        
+        // Table Headers
+        colTime: "Oră",
+        peakLabel: "Vârf: {num} șoferi",
+        
+        // Side Panel Placeholder
+        panelSelectSlot: "Selectați un Interval Orare",
+        panelPlaceholderText: "Faceți clic pe orice celulă din tabel pentru a vedea calcule detaliate, formule matematice și jurnale istorice de audit.",
+        
+        // Side Panel Header
+        panelSlotDetails: "Detalii Interval",
+        panelForecastDate: "Data Prognozei: {date}",
+        
+        // Side Panel Section Titles
+        panelSectionMetrics: "Metrici Operaționale",
+        panelSectionMath: "Cale de Audit Matematic",
+        panelSectionExplanation: "Explicație",
+        
+        // Detail Labels
+        detailDemand: "Cerere Prognozată (Iunie)",
+        detailHistorical: "Finalizări Istorice (Mai)",
+        detailActiveDrivers: "Șoferi Activi Estimați",
+        detailCapacity: "Capacitate Totală de Livrare",
+        detailBalance: "Balanță Netă Capacitate",
+        detailDriversNeeded: "Șoferi Necesar",
+        detailUtilization: "Grad de Utilizare Capacitate",
+        
+        // Detail Suffixes
+        suffixDeliveries: "livrări",
+        suffixMayAvg: "livrări (medie Mai)",
+        suffixActive: "activi",
+        suffixSurplus: "livrări (surplus)",
+        suffixShortage: "livrări (deficit)",
+        
+        // Recommendations
+        recOptimal: "🟢 <strong>Personal Optim:</strong> Capacitatea este complet suficientă în toate intervalele. Nivelurile actuale de șoferi planificați pot gestiona cererea prognozată fără probleme. Capacitatea suplimentară poate absorbi <strong>{surplus}</strong> livrări adiționale.",
+        recAlert: "⚠️ <strong>Alertă Deficit:</strong> Capacitate totală suficientă, dar ",
+        recShortage: "🔴 <strong>Deficit Critic:</strong> Deficit de <strong>{deficit}</strong> livrări. ",
+        recDeficitBody: "Există <strong>{slots}</strong> intervale de 30 de minute cu deficit. Vârful deficitului are loc <strong>{day} la {slot}</strong> (necesar <strong>+{needed}</strong> șoferi). Recomandăm mutarea schimburilor sau angajarea de șoferi flexibili pentru vârfurile de <strong>{worstDay}</strong>.",
+        
+        // Math Box
+        mathCapacityHeader: "1. Capacitate Estimată (C)",
+        mathCapacityFormula: "C = Șoferi Activi (N) &times; Rata de Productivitate (P_30)<br>C = {active} &times; ({prod} / 2)<br>C = {active} &times; {p30}<br><strong>C = {capacity} livrări</strong>",
+        mathBalanceHeader: "2. Balanță Netă (S)",
+        mathBalanceFormula: "S = Capacitate (C) - Cerere (D)<br>S = {capacity} - {demand}<br><strong>S = {balance} livrări</strong>",
+        mathAuditHeader: "3. Audit Șoferi",
+        mathAuditSurplus: "Șoferi în Surplus = S / P_30<br>Surplus = {balance} / {p30} = {surplus}<br><div class=\"math-result sufficient-result\">Rezultat: +{result} șoferi în plus</div>",
+        mathAuditDeficit: "Șoferi Necesar = |S| / P_30<br>Necesar = {balance} / {p30} = {deficit}<br><div class=\"math-result\">Rezultat: -{result} șoferi necesar</div>",
+        
+        // Explanation Text
+        expSufficient: "Ne așteptăm la <strong>{demand}</strong> livrări. Pe baza activității din Mai, anticipăm o medie de <strong>{active}</strong> șoferi activi. La {prod} livrări/oră, aceasta oferă o capacitate de <strong>{capacity}</strong> livrări finalizate. Flota noastră are capacitate suficientă (surplus de <strong>+{balance}</strong> livrări), rămânând aproximativ <strong>+{excess}</strong> șoferi disponibili.",
+        expDeficit: "Ne așteptăm la <strong>{demand}</strong> livrări. Totuși, datele istorice din Mai sugerează că doar <strong>{active}</strong> șoferi activi vor fi de serviciu, oferind o capacitate maximă de livrare de <strong>{capacity}</strong> comenzi. Acest lucru duce la un deficit estimat de <strong>{balance}</strong> livrări. Pentru a preveni comenzile întârziate, recomandăm planificarea a cel puțin <strong>{add}</strong> șofer(i) suplimentar(i) pentru acest interval de 30 de minute.",
+        
+        // Weekdays
+        days: {
+          Monday: "Luni",
+          Tuesday: "Marți",
+          Wednesday: "Miercuri",
+          Thursday: "Joi",
+          Friday: "Vineri",
+          Saturday: "Sâmbătă",
+          Sunday: "Duminică"
+        }
+      }
+    };
+
     // DOM Elements
     const citySelector = document.getElementById('city-selector');
     const weekSelector = document.getElementById('week-selector');
     const productivityInput = document.getElementById('productivity-input');
+    const langSelector = document.getElementById('lang-selector');
+    
+    const appSubtitle = document.getElementById('app-subtitle');
+    const labelCity = document.getElementById('label-city');
+    const labelWeek = document.getElementById('label-week');
+    const labelProductivity = document.getElementById('label-productivity');
+    const langLabel = document.getElementById('lang-label');
+    
     const forecastWarningBanner = document.getElementById('forecast-warning-banner');
     const bannerText = document.getElementById('banner-text');
 
@@ -751,6 +957,13 @@
     const statMaxDriversTime = document.getElementById('stat-max-drivers-time');
     const statStaffingRec = document.getElementById('stat-staffing-rec');
 
+    const metricHeaderDemand = document.getElementById('metric-header-demand');
+    const metricHeaderCapacity = document.getElementById('metric-header-capacity');
+    const metricHeaderSurplus = document.getElementById('metric-header-surplus');
+    const metricHeaderHiring = document.getElementById('metric-header-hiring');
+    const metricHeaderPeak = document.getElementById('metric-header-peak');
+    const metricHeaderRec = document.getElementById('metric-header-rec');
+
     const gridHeaderRow = document.getElementById('grid-header-row');
     const gridBody = document.getElementById('grid-body');
 
@@ -761,6 +974,19 @@
 
     const panelTitleTime = document.getElementById('panel-title-time');
     const panelTitleDate = document.getElementById('panel-title-date');
+    
+    const panelSecMetrics = document.getElementById('panel-sec-metrics');
+    const panelSecMath = document.getElementById('panel-sec-math');
+    const panelSecExplanation = document.getElementById('panel-sec-explanation');
+    
+    const labelValDemand = document.getElementById('label-val-demand');
+    const labelValHistorical = document.getElementById('label-val-historical');
+    const labelValActive = document.getElementById('label-val-active');
+    const labelValCapacity = document.getElementById('label-val-capacity');
+    const labelValBalance = document.getElementById('label-val-balance');
+    const labelValDriversNeeded = document.getElementById('label-val-drivers-needed');
+    const labelValUtilization = document.getElementById('label-val-utilization');
+
     const panelValDemand = document.getElementById('panel-val-demand');
     const panelValHistoricalCompletions = document.getElementById('panel-val-historical-completions');
     const panelValActiveDrivers = document.getElementById('panel-val-active-drivers');
@@ -783,6 +1009,42 @@
       }
     }
 
+    function applyLanguage() {
+      const lang = currentLang;
+      const t = TRANSLATIONS[lang];
+      
+      document.title = t.title;
+      appSubtitle.textContent = t.subtitle;
+      labelCity.textContent = t.labelCity;
+      labelWeek.textContent = t.labelWeek;
+      labelProductivity.textContent = t.labelProductivity;
+      langLabel.textContent = t.labelLanguage;
+      
+      metricHeaderDemand.textContent = t.metricDemand;
+      metricHeaderCapacity.textContent = t.metricCapacity;
+      metricHeaderSurplus.textContent = t.metricSurplusShortage;
+      metricHeaderHiring.textContent = t.metricHiringDeficit;
+      metricHeaderPeak.textContent = t.metricPeakDrivers;
+      metricHeaderRec.textContent = t.metricRecommendation;
+      
+      if (panelPlaceholder) {
+        panelPlaceholder.querySelector('h3').textContent = t.panelSelectSlot;
+        panelPlaceholder.querySelector('p').textContent = t.panelPlaceholderText;
+      }
+      
+      panelSecMetrics.textContent = t.panelSectionMetrics;
+      panelSecMath.textContent = t.panelSectionMath;
+      panelSecExplanation.textContent = t.panelSectionExplanation;
+      
+      labelValDemand.textContent = t.detailDemand;
+      labelValHistorical.textContent = t.detailHistorical;
+      labelValActive.textContent = t.detailActiveDrivers;
+      labelValCapacity.textContent = t.detailCapacity;
+      labelValBalance.textContent = t.detailBalance;
+      labelValDriversNeeded.textContent = t.detailDriversNeeded;
+      labelValUtilization.textContent = t.detailUtilization;
+    }
+
     function initDashboard() {
       // 1. Populate Cities
       citySelector.innerHTML = '';
@@ -794,10 +1056,13 @@
         citySelector.appendChild(opt);
       });
 
-      // 2. Render Week Selector Buttons
+      // 2. Apply initial translation
+      applyLanguage();
+
+      // 3. Render Week Selector Buttons
       renderWeekSelector();
 
-      // 3. Bind Event Listeners
+      // 4. Bind Event Listeners
       citySelector.addEventListener('change', (e) => {
         currentCity = e.target.value;
         renderWeekSelector(); // Re-render week buttons to show dates for this city
@@ -814,6 +1079,17 @@
             const [wday, slotTime] = activeCellId.split('|');
             showCellAudit(wday, slotTime);
           }
+        }
+      });
+
+      langSelector.addEventListener('change', (e) => {
+        currentLang = e.target.value;
+        applyLanguage();
+        renderWeekSelector();
+        updateDashboard();
+        if (activeCellId) {
+          const [wday, slotTime] = activeCellId.split('|');
+          showCellAudit(wday, slotTime);
         }
       });
 
@@ -846,7 +1122,8 @@
           return `${parts[2]}.${parts[1]}`;
         };
         
-        btn.textContent = `W${idx+1} (${formatShortDate(monDate)} - ${formatShortDate(sunDate)})`;
+        const weekPrefix = currentLang === 'ro' ? 'S' : 'W';
+        btn.textContent = `${weekPrefix}${idx+1} (${formatShortDate(monDate)} - ${formatShortDate(sunDate)})`;
         
         btn.addEventListener('click', () => {
           Array.from(weekSelector.children).forEach(b => b.classList.remove('active'));
@@ -926,7 +1203,10 @@
         const cityCompletions = getCityHistoricalVolume(currentCity);
         const berlinCompletions = getCityHistoricalVolume('Berlin');
         const factor = berlinCompletions > 0 ? ((cityCompletions / berlinCompletions) * 100).toFixed(1) : 0;
-        bannerText.textContent = `⚠️ June Forecast not uploaded for ${currentCity}. Dashboard displays simulated forecast by scaling Berlin's profile (factor: ${factor}%).`;
+        
+        bannerText.textContent = TRANSLATIONS[currentLang].warningBanner
+          .replace('{city}', currentCity)
+          .replace('{factor}', factor);
       } else {
         forecastWarningBanner.style.display = 'none';
       }
@@ -935,8 +1215,10 @@
       const selectedWeek = cityForecasts && cityForecasts[currentWeekIdx] ? cityForecasts[currentWeekIdx] : appData.forecasts['Berlin'][currentWeekIdx];
       const monDate = selectedWeek.days['Monday'].date;
       const sunDate = selectedWeek.days['Sunday'].date;
-      statForecastDateRange.textContent = `${monDate} to ${sunDate}`;
-      statProductivityRate.textContent = `At ${currentProductivity.toFixed(2)} deliveries/hr per active driver`;
+      
+      const dateSeparator = currentLang === 'ro' ? ' până la ' : ' to ';
+      statForecastDateRange.textContent = `${monDate}${dateSeparator}${sunDate}`;
+      statProductivityRate.textContent = TRANSLATIONS[currentLang].rateInfo.replace('{rate}', currentProductivity.toFixed(2));
 
       let totalForecastDemand = 0;
       let totalEstimatedCapacity = 0;
@@ -1000,29 +1282,34 @@
       if (netSurplusVal >= 0) {
         statNetSurplus.textContent = `+${netSurplusVal.toLocaleString()}`;
         statNetSurplus.className = 'metric-value';
-        statNetSurplusStatus.textContent = '🟢 Sufficient Weekly Capacity';
+        statNetSurplusStatus.textContent = TRANSLATIONS[currentLang].sufficientCapacity;
         statNetSurplusStatus.className = 'metric-sub positive';
       } else {
         statNetSurplus.textContent = `${netSurplusVal.toLocaleString()}`;
         statNetSurplus.className = 'metric-value';
-        statNetSurplusStatus.textContent = '🔴 Staffing Deficit';
+        statNetSurplusStatus.textContent = TRANSLATIONS[currentLang].staffingDeficit;
         statNetSurplusStatus.className = 'metric-sub negative';
       }
 
       // Update hiring deficit card
       if (totalShortageSlots > 0) {
-        statHiringDeficit.textContent = `${maxDeficitDrivers} Drivers`;
+        statHiringDeficit.textContent = `${maxDeficitDrivers} ${TRANSLATIONS[currentLang].drivers}`;
         statHiringDeficit.className = 'metric-value';
-        statHiringSub.innerHTML = `Deficit: <span style="color: var(--color-red-text); font-weight: 600;">${Math.round(totalDeficitVolume)} deliv</span> (${totalDeficitDriverHours.toFixed(1)} hrs)`;
+        statHiringSub.innerHTML = TRANSLATIONS[currentLang].hiringDeficitSub
+          .replace('{deficit}', Math.round(totalDeficitVolume))
+          .replace('{hours}', totalDeficitDriverHours.toFixed(1));
       } else {
-        statHiringDeficit.textContent = '0 Drivers';
+        statHiringDeficit.textContent = `0 ${TRANSLATIONS[currentLang].drivers}`;
         statHiringDeficit.className = 'metric-value';
-        statHiringSub.textContent = '🟢 Fully staffed (0 deficit slots)';
+        statHiringSub.textContent = TRANSLATIONS[currentLang].fullyStaffed;
       }
 
       // Update max weekly drivers card
-      statMaxDrivers.textContent = `${Math.ceil(maxWeeklyDrivers)} Drivers`;
-      statMaxDriversTime.textContent = `Peak slot: ${maxWeeklyDriversDay} at ${maxWeeklyDriversSlot}`;
+      statMaxDrivers.textContent = `${Math.ceil(maxWeeklyDrivers)} ${TRANSLATIONS[currentLang].drivers}`;
+      const translatedMaxDay = TRANSLATIONS[currentLang].days[maxWeeklyDriversDay] || maxWeeklyDriversDay;
+      statMaxDriversTime.textContent = TRANSLATIONS[currentLang].peakSlotInfo
+        .replace('{day}', translatedMaxDay)
+        .replace('{slot}', maxWeeklyDriversSlot);
 
       // Staffing recommendations
       generateStaffingRecommendation(netSurplusVal, totalShortageSlots, peakShortages, totalSurplusVolume);
@@ -1035,7 +1322,8 @@
       const p30 = currentProductivity * 0.5;
       
       if (shortageSlots === 0) {
-        statStaffingRec.innerHTML = `🟢 <strong>Optimal Staffing:</strong> Capacity is fully sufficient across all slots. Current scheduled driver levels can handle the forecasted demand comfortably. Extra capacity can absorb <strong>${Math.round(totalSurplusVolume)}</strong> additional deliveries.`;
+        statStaffingRec.innerHTML = TRANSLATIONS[currentLang].recOptimal
+          .replace('{surplus}', Math.round(totalSurplusVolume));
         return;
       }
 
@@ -1058,12 +1346,21 @@
 
       const maxConcurrentDeficitDrivers = Math.ceil(worst.deficit / p30);
 
-      let recText = `⚠️ <strong>Shortage Alert:</strong> Sufficient overall capacity, but `;
+      let recText = TRANSLATIONS[currentLang].recAlert;
       if (netSurplus < 0) {
-        recText = `🔴 <strong>Critical Shortage:</strong> Deficit of <strong>${Math.abs(netSurplus).toLocaleString()}</strong> deliveries. `;
+        recText = TRANSLATIONS[currentLang].recShortage
+          .replace('{deficit}', Math.abs(netSurplus).toLocaleString());
       }
 
-      recText += `There are <strong>${shortageSlots}</strong> understaffed 30-minute intervals. Peak deficit occurs on <strong>${worst.day} at ${worst.slot}</strong> (need <strong>+${maxConcurrentDeficitDrivers}</strong> drivers). We recommend shifting schedules or hiring flex drivers for <strong>${worstDay}</strong> peaks.`;
+      const translatedWorstDay = TRANSLATIONS[currentLang].days[worst.day] || worst.day;
+      const translatedWorstDayOverall = TRANSLATIONS[currentLang].days[worstDay] || worstDay;
+
+      recText += TRANSLATIONS[currentLang].recDeficitBody
+        .replace('{slots}', shortageSlots)
+        .replace('{day}', translatedWorstDay)
+        .replace('{slot}', worst.slot)
+        .replace('{needed}', maxConcurrentDeficitDrivers)
+        .replace('{worstDay}', translatedWorstDayOverall);
       
       statStaffingRec.innerHTML = recText;
     }
@@ -1073,7 +1370,7 @@
       gridHeaderRow.innerHTML = '';
       const thTime = document.createElement('th');
       thTime.classList.add('time-header');
-      thTime.textContent = 'Time';
+      thTime.textContent = TRANSLATIONS[currentLang].colTime;
       gridHeaderRow.appendChild(thTime);
       
       WEEKDAYS.forEach(day => {
@@ -1094,7 +1391,11 @@
           }
         });
         
-        th.innerHTML = `${day}<br><span style="font-size: 11px; font-weight: 400; color: var(--text-muted);">${shortDate}</span><br><span style="font-size: 11px; font-weight: 600; color: var(--accent-color);">Peak: ${Math.ceil(maxDayDrivers)} drivers</span>`;
+        const translatedDayName = TRANSLATIONS[currentLang].days[day] || day;
+        const peakDriversText = TRANSLATIONS[currentLang].peakLabel
+          .replace('{num}', Math.ceil(maxDayDrivers));
+
+        th.innerHTML = `${translatedDayName}<br><span style="font-size: 11px; font-weight: 400; color: var(--text-muted);">${shortDate}</span><br><span style="font-size: 11px; font-weight: 600; color: var(--accent-color);">${peakDriversText}</span>`;
         gridHeaderRow.appendChild(th);
       });
 
@@ -1182,23 +1483,26 @@
       const selectedWeek = cityForecasts && cityForecasts[currentWeekIdx] ? cityForecasts[currentWeekIdx] : appData.forecasts['Berlin'][currentWeekIdx];
       const dateStr = selectedWeek.days[weekday].date;
       
-      panelTitleTime.textContent = `${weekday} at ${slotTime}`;
-      panelTitleDate.textContent = `Forecast Date: ${dateStr}`;
+      const translatedWeekday = TRANSLATIONS[currentLang].days[weekday] || weekday;
+      const slotSeparator = currentLang === 'ro' ? ' la ' : ' at ';
       
-      panelValDemand.textContent = demand.toLocaleString() + " deliveries";
-      panelValHistoricalCompletions.textContent = completions.toFixed(1) + " deliveries (May avg)";
-      panelValActiveDrivers.textContent = activeDrivers.toFixed(2) + " active";
-      panelValCapacity.textContent = capacity.toFixed(2) + " deliveries";
+      panelTitleTime.textContent = `${translatedWeekday}${slotSeparator}${slotTime}`;
+      panelTitleDate.textContent = TRANSLATIONS[currentLang].panelForecastDate.replace('{date}', dateStr);
+      
+      panelValDemand.textContent = demand.toLocaleString() + " " + TRANSLATIONS[currentLang].suffixDeliveries;
+      panelValHistoricalCompletions.textContent = completions.toFixed(1) + " " + TRANSLATIONS[currentLang].suffixMayAvg;
+      panelValActiveDrivers.textContent = activeDrivers.toFixed(2) + " " + TRANSLATIONS[currentLang].suffixActive;
+      panelValCapacity.textContent = capacity.toFixed(2) + " " + TRANSLATIONS[currentLang].suffixDeliveries;
       
       if (diffDeliveries >= 0) {
-        panelValBalance.textContent = `+${diffDeliveries.toFixed(2)} deliveries (surplus)`;
+        panelValBalance.textContent = `+${diffDeliveries.toFixed(2)} ` + TRANSLATIONS[currentLang].suffixSurplus;
         panelValBalance.className = "detail-val highlight green";
         panelValDriversNeeded.textContent = "0";
       } else {
-        panelValBalance.textContent = `${diffDeliveries.toFixed(2)} deliveries (shortage)`;
+        panelValBalance.textContent = `${diffDeliveries.toFixed(2)} ` + TRANSLATIONS[currentLang].suffixShortage;
         panelValBalance.className = "detail-val highlight red";
         const driversReq = Math.ceil(Math.abs(diffDeliveries) / p30);
-        panelValDriversNeeded.textContent = `${driversReq} additional`;
+        panelValDriversNeeded.textContent = `${driversReq} ` + TRANSLATIONS[currentLang].driversAdditional;
       }
       
       panelValUtilization.textContent = `${utilization.toFixed(2)}%`;
@@ -1207,28 +1511,34 @@
       let isSufficient = diffDeliveries >= 0;
       let diffVal = Math.abs(diffDeliveries).toFixed(2);
       
-      let mathText = `<div class="math-formula">1. Estimated Capacity (C)</div>`;
-      mathText += `C = Active Drivers (N) &times; Productivity Rate (P_30)<br>`;
-      mathText += `C = ${activeDrivers.toFixed(2)} &times; (${currentProductivity} / 2)<br>`;
-      mathText += `C = ${activeDrivers.toFixed(2)} &times; ${p30.toFixed(2)}<br>`;
-      mathText += `<strong>C = ${capacity.toFixed(2)} deliveries</strong><br><br>`;
+      let mathText = `<div class="math-formula">${TRANSLATIONS[currentLang].mathCapacityHeader}</div>`;
+      mathText += TRANSLATIONS[currentLang].mathCapacityFormula
+        .replaceAll('{active}', activeDrivers.toFixed(2))
+        .replaceAll('{prod}', currentProductivity)
+        .replaceAll('{p30}', p30.toFixed(2))
+        .replaceAll('{capacity}', capacity.toFixed(2)) + "<br><br>";
       
-      mathText += `<div class="math-formula">2. Net Balance (S)</div>`;
-      mathText += `S = Capacity (C) - Demand (D)<br>`;
-      mathText += `S = ${capacity.toFixed(2)} - ${demand}<br>`;
-      mathText += `<strong>S = ${diffDeliveries.toFixed(2)} deliveries</strong><br><br>`;
+      mathText += `<div class="math-formula">${TRANSLATIONS[currentLang].mathBalanceHeader}</div>`;
+      mathText += TRANSLATIONS[currentLang].mathBalanceFormula
+        .replaceAll('{capacity}', capacity.toFixed(2))
+        .replaceAll('{demand}', demand)
+        .replaceAll('{balance}', diffDeliveries.toFixed(2)) + "<br><br>";
       
-      mathText += `<div class="math-formula">3. Driver Audit</div>`;
+      mathText += `<div class="math-formula">${TRANSLATIONS[currentLang].mathAuditHeader}</div>`;
       if (isSufficient) {
         const surplusDrivers = diffDeliveries / p30;
-        mathText += `Surplus Drivers = S / P_30<br>`;
-        mathText += `Surplus = ${diffVal} / ${p30.toFixed(2)} = ${surplusDrivers.toFixed(2)}<br>`;
-        mathText += `<div class="math-result sufficient-result">Result: +${Math.floor(surplusDrivers)} excess drivers</div>`;
+        mathText += TRANSLATIONS[currentLang].mathAuditSurplus
+          .replaceAll('{balance}', diffVal)
+          .replaceAll('{p30}', p30.toFixed(2))
+          .replaceAll('{surplus}', surplusDrivers.toFixed(2))
+          .replaceAll('{result}', Math.floor(surplusDrivers));
       } else {
         const neededDrivers = Math.abs(diffDeliveries) / p30;
-        mathText += `Drivers Needed = |S| / P_30<br>`;
-        mathText += `Needed = ${diffVal} / ${p30.toFixed(2)} = ${neededDrivers.toFixed(2)}<br>`;
-        mathText += `<div class="math-result">Result: -${Math.ceil(neededDrivers)} drivers needed</div>`;
+        mathText += TRANSLATIONS[currentLang].mathAuditDeficit
+          .replaceAll('{balance}', diffVal)
+          .replaceAll('{p30}', p30.toFixed(2))
+          .replaceAll('{deficit}', neededDrivers.toFixed(2))
+          .replaceAll('{result}', Math.ceil(neededDrivers));
       }
       
       panelMathBox.innerHTML = mathText;
@@ -1236,10 +1546,21 @@
       // Explanation
       let expText = "";
       if (isSufficient) {
-        expText = `We expect <strong>${demand}</strong> deliveries. Based on May activity, we anticipate an average of <strong>${activeDrivers.toFixed(1)}</strong> active drivers. At ${currentProductivity.toFixed(2)} deliveries/hr, this provides a capacity of <strong>${capacity.toFixed(1)}</strong> completed deliveries. Our fleet has sufficient capacity (surplus of <strong>+${diffDeliveries.toFixed(1)}</strong> deliveries), leaving approximately <strong>+${Math.floor(diffDeliveries / p30)}</strong> drivers available.`;
+        expText = TRANSLATIONS[currentLang].expSufficient
+          .replace('{demand}', demand)
+          .replace('{active}', activeDrivers.toFixed(1))
+          .replace('{prod}', currentProductivity.toFixed(2))
+          .replace('{capacity}', capacity.toFixed(1))
+          .replace('{balance}', diffDeliveries.toFixed(1))
+          .replace('{excess}', Math.floor(diffDeliveries / p30));
       } else {
         const addDrivers = Math.ceil(Math.abs(diffDeliveries) / p30);
-        expText = `We expect <strong>${demand}</strong> deliveries. However, historical May data suggests only <strong>${activeDrivers.toFixed(1)}</strong> active drivers will be on shift, giving a maximum delivery capacity of <strong>${capacity.toFixed(1)}</strong> orders. This results in an estimated shortage of <strong>${Math.abs(diffDeliveries).toFixed(1)}</strong> deliveries. To prevent delayed orders, we recommend scheduling at least <strong>${addDrivers}</strong> additional driver(s) for this 30-minute block.`;
+        expText = TRANSLATIONS[currentLang].expDeficit
+          .replace('{demand}', demand)
+          .replace('{active}', activeDrivers.toFixed(1))
+          .replace('{capacity}', capacity.toFixed(1))
+          .replace('{balance}', Math.abs(diffDeliveries).toFixed(1))
+          .replace('{add}', addDrivers);
       }
       panelExplanationText.innerHTML = expText;
 
