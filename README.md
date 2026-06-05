@@ -10,7 +10,7 @@ Currently, it features forecast predictions and audits for **Berlin**, and provi
 * `dashboard_data.json`: Consolidated, precalculated dataset containing forecast weeks and historical weekday profiles.
 * `verify_data.py`: Audit verification script to check dataset integrity.
 * `Dockerfile`: Lightweight Nginx server configuration to run the app in Docker.
-* `default.conf`: Custom Nginx configuration listening on port `8089`.
+* `default.conf`: Custom Nginx configuration listening on port `8057`.
 * `docker-compose.yaml`: Docker Compose deployment specification.
 
 ## Core Forecasting Model & Calculations
@@ -31,7 +31,7 @@ For any 30-minute interval on weekday $w$ at time $t$ in June:
    * If $S < 0$ (Deficit capacity):
      $$\text{Additional Drivers Needed} = \lceil |S| / P_{30} \rceil$$
 
-## Docker Deployment (Port 8089)
+## Docker Deployment (Port 8057)
 
 To run the application locally or on a production server:
 
@@ -43,6 +43,6 @@ To run the application locally or on a production server:
 2. **Run using Standard Docker Commands**:
    ```bash
    docker build -t fleetcap-dashboard .
-   docker run -d -p 8089:8089 --name fleetcap-container fleetcap-dashboard
+   docker run -d -p 8057:8057 --name fleetcap-container fleetcap-dashboard
    ```
-   Access the dashboard at `http://localhost:8089/` or `http://<server-ip>:8089/`.
+   Access the dashboard at `http://localhost:8057/` or `http://<server-ip>:8057/`.

@@ -8,8 +8,8 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 COPY index.html /usr/share/nginx/html/
 COPY dashboard_data.json /usr/share/nginx/html/
 
-# Expose port 8089 as requested
-EXPOSE 8089
+# Expose port 8057 as requested
+EXPOSE 8057
 
 # Start Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]

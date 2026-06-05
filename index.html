@@ -800,6 +800,7 @@
       // 3. Bind Event Listeners
       citySelector.addEventListener('change', (e) => {
         currentCity = e.target.value;
+        renderWeekSelector(); // Re-render week buttons to show dates for this city
         closeAuditor();
         updateDashboard();
       });
@@ -824,11 +825,17 @@
 
     function renderWeekSelector() {
       weekSelector.innerHTML = '';
-      const berlinWeeks = appData.forecasts['Berlin'];
-      berlinWeeks.forEach((week, idx) => {
+      const cityForecasts = appData.forecasts[currentCity];
+      const targetWeeks = cityForecasts ? cityForecasts : appData.forecasts['Berlin'];
+      
+      if (currentWeekIdx >= targetWeeks.length) {
+        currentWeekIdx = 0;
+      }
+      
+      targetWeeks.forEach((week, idx) => {
         const btn = document.createElement('button');
         btn.classList.add('week-btn');
-        if (idx === 0) btn.classList.add('active');
+        if (idx === currentWeekIdx) btn.classList.add('active');
         btn.dataset.index = idx;
         
         const monDate = week.days['Monday'].date;
@@ -882,11 +889,9 @@
     }
 
     function getForecastDemand(city, weekIdx, weekday, timeSlot) {
-      if (city === 'Berlin') {
-        const week = appData.forecasts['Berlin'][weekIdx];
-        if (week && week.days[weekday]) {
-          return week.days[weekday].slots[timeSlot] || 0;
-        }
+      const cityForecasts = appData.forecasts[city];
+      if (cityForecasts && cityForecasts[weekIdx] && cityForecasts[weekIdx].days[weekday]) {
+        return cityForecasts[weekIdx].days[weekday].slots[timeSlot] || 0;
       } else {
         // Scale Berlin forecast to other cities using their historical ratios
         const cityCompletions = getCityHistoricalVolume(city);
@@ -915,7 +920,8 @@
 
     function updateDashboard() {
       // Toggle banner
-      if (currentCity !== 'Berlin') {
+      const cityForecasts = appData.forecasts[currentCity];
+      if (!cityForecasts) {
         forecastWarningBanner.style.display = 'flex';
         const cityCompletions = getCityHistoricalVolume(currentCity);
         const berlinCompletions = getCityHistoricalVolume('Berlin');
@@ -926,7 +932,7 @@
       }
 
       // Compute Weekly aggregates
-      const selectedWeek = appData.forecasts['Berlin'][currentWeekIdx];
+      const selectedWeek = cityForecasts && cityForecasts[currentWeekIdx] ? cityForecasts[currentWeekIdx] : appData.forecasts['Berlin'][currentWeekIdx];
       const monDate = selectedWeek.days['Monday'].date;
       const sunDate = selectedWeek.days['Sunday'].date;
       statForecastDateRange.textContent = `${monDate} to ${sunDate}`;
@@ -1072,7 +1078,9 @@
       
       WEEKDAYS.forEach(day => {
         const th = document.createElement('th');
-        const dateStr = appData.forecasts['Berlin'][currentWeekIdx].days[day].date;
+        const cityForecasts = appData.forecasts[currentCity];
+        const selectedWeek = cityForecasts && cityForecasts[currentWeekIdx] ? cityForecasts[currentWeekIdx] : appData.forecasts['Berlin'][currentWeekIdx];
+        const dateStr = selectedWeek.days[day].date;
         const shortDate = dateStr.substring(8, 10) + '/' + dateStr.substring(5, 7);
         
         // Calculate max driver needed in this day
@@ -1170,7 +1178,9 @@
       
       const utilization = capacity > 0 ? (demand / capacity) * 100 : 0;
       
-      const dateStr = appData.forecasts['Berlin'][currentWeekIdx].days[weekday].date;
+      const cityForecasts = appData.forecasts[currentCity];
+      const selectedWeek = cityForecasts && cityForecasts[currentWeekIdx] ? cityForecasts[currentWeekIdx] : appData.forecasts['Berlin'][currentWeekIdx];
+      const dateStr = selectedWeek.days[weekday].date;
       
       panelTitleTime.textContent = `${weekday} at ${slotTime}`;
       panelTitleDate.textContent = `Forecast Date: ${dateStr}`;
