@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FLEETCAP: Driver Capacity Prediction Model</title>
+  <title>FLEETCAP: Driver Capacity & Cost Auditor</title>
   <!-- Google Fonts Outfit & JetBrains Mono for formulas -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,7 @@
       --text-main: #0f172a;
       --text-muted: #64748b;
       
-      /* Capacity Colors adapted for Light Mode (Vivid contrast for high visibility) */
+      /* Capacity Colors adapted for Light Mode */
       --color-green-bg: #c6f6d5;
       --color-green-border: #48bb78;
       --color-green-text: #1a5235;
@@ -75,9 +75,9 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       backdrop-filter: blur(12px);
-      padding: 24px;
+      padding: 20px 24px;
       border-radius: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -144,60 +144,35 @@
       background: #fafafa;
     }
 
-    .week-selector {
+    /* Tab Bar styling */
+    .tab-bar {
       display: flex;
-      background: rgba(0, 0, 0, 0.04);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-    }
-
-    .week-btn {
-      background: transparent;
-      border: none;
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 500;
-      border-radius: 8px;
-      box-shadow: none;
-      transition: all 0.2s ease;
-    }
-
-    .week-btn.active {
-      background: var(--accent-color);
-      color: white;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
-    }
-
-    .week-btn:hover:not(.active) {
+      gap: 12px;
+      margin-bottom: 24px;
       background: rgba(0, 0, 0, 0.03);
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      width: fit-content;
     }
 
-    .toggle-container {
-      display: flex;
-      padding: 4px;
-      gap: 4px;
-      background: rgba(0, 0, 0, 0.04);
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      box-shadow: none;
-    }
-
-    .toggle-btn {
+    .tab-btn {
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 6px 12px;
-      font-size: 12px;
-      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
       box-shadow: none;
-      transition: all 0.2s ease;
     }
 
-    .toggle-btn.active {
+    .tab-btn.active {
       background: #ffffff;
-      color: var(--text-main);
-      font-weight: 600;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      color: var(--accent-color);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     }
 
     /* Warning Banner for Simulation */
@@ -213,6 +188,21 @@
       gap: 12px;
       font-size: 14px;
       box-shadow: 0 2px 8px rgba(245, 158, 11, 0.05);
+    }
+
+    /* Tab Contents */
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* Metrics Grid */
@@ -394,7 +384,7 @@
       box-shadow: 0 0 12px rgba(15, 23, 42, 0.25);
     }
 
-    /* Sliding Panel (Drawer) in light mode */
+    /* Sliding Panel (Drawer) */
     .auditor-panel {
       width: 420px;
       background: var(--card-bg);
@@ -543,6 +533,256 @@
       opacity: 0.7;
     }
 
+    /* Week Selector Styling */
+    .week-selector {
+      display: flex;
+      background: rgba(0, 0, 0, 0.04);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .week-btn {
+      background: transparent;
+      border: none;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 8px;
+      box-shadow: none;
+      transition: all 0.2s ease;
+    }
+
+    .week-btn.active {
+      background: var(--accent-color);
+      color: white;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    }
+
+    .week-btn:hover:not(.active) {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    /* COST TAB LAYOUT & STYLES */
+    .cost-tab-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .cost-sidebar {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .cost-main {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .sim-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sim-form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .sim-form-group select, .sim-form-group input {
+      width: 100%;
+    }
+
+    /* Cost bars graphic styling */
+    .cost-chart-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+
+    .cost-chart-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cost-bar-row {
+      margin-bottom: 16px;
+    }
+
+    .cost-bar-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .cost-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13.5px;
+      margin-bottom: 6px;
+    }
+
+    .cost-bar-name {
+      font-weight: 600;
+    }
+
+    .cost-bar-val {
+      font-family: var(--font-mono);
+      font-weight: 500;
+    }
+
+    .cost-bar-track {
+      height: 20px;
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cost-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cost-bar-fill.compliant {
+      background: linear-gradient(90deg, #48bb78 0%, #38a169 100%);
+    }
+
+    .cost-bar-fill.exceeds {
+      background: linear-gradient(90deg, #f56565 0%, #e53e3e 100%);
+    }
+
+    .cost-limit-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #0f172a;
+      z-index: 2;
+    }
+
+    .cost-limit-label {
+      position: absolute;
+      top: -18px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #0f172a;
+      transform: translateX(-50%);
+    }
+
+    /* Restructuring checklist */
+    .checklist-container {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+
+    .checklist-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .checklist-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .checklist-checkbox {
+      margin-top: 4px;
+      min-width: 16px;
+      min-height: 16px;
+      accent-color: var(--accent-color);
+    }
+
+    .checklist-text {
+      color: #1e293b;
+    }
+
+    /* Hierarchy Table in Cost view */
+    .hierarchy-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+
+    .hierarchy-table {
+      width: 100%;
+      border-spacing: 0;
+      margin-top: 12px;
+    }
+
+    .hierarchy-table th {
+      text-align: left;
+      padding: 8px 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .hierarchy-table td {
+      padding: 10px 12px;
+      font-size: 13.5px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      height: auto;
+    }
+
+    .hierarchy-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-badge.green {
+      background: #c6f6d5;
+      color: #1a5235;
+    }
+
+    .status-badge.red {
+      background: #fed7d7;
+      color: #742a2a;
+    }
+
+    .status-badge.orange {
+      background: #feebc8;
+      color: #744210;
+    }
+
     /* Scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
@@ -581,18 +821,6 @@
       </div>
 
       <div class="control-group">
-        <span class="control-label" id="label-week">Forecast Week</span>
-        <div class="week-selector" id="week-selector">
-          <!-- Dynamically populated -->
-        </div>
-      </div>
-
-      <div class="control-group">
-        <span class="control-label" id="label-productivity">Productivity Baseline (orders/hr)</span>
-        <input type="number" id="productivity-input" value="2.00" step="0.05" min="0.1" max="10.0" style="width: 110px; font-family: inherit;">
-      </div>
-
-      <div class="control-group">
         <span class="control-label" id="lang-label">Language</span>
         <select id="lang-selector">
           <option value="en" selected>🇬🇧 EN</option>
@@ -608,116 +836,246 @@
     <div id="banner-text">Warning Text</div>
   </div>
 
-  <!-- Summary Cards -->
-  <div class="metrics-grid">
-    <div class="metric-card">
-      <div class="metric-header" id="metric-header-demand">Forecasted Orders (Demand)</div>
-      <div class="metric-value" id="stat-forecast-demand">0</div>
-      <div class="metric-sub" id="stat-forecast-date-range">dates</div>
+  <!-- Tab selector bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-forecast-btn" onclick="switchTab('forecast')">📊 Capacity & Forecasting</button>
+    <button class="tab-btn" id="tab-cost-btn" onclick="switchTab('cost')">💸 Cost Structure & Restructuring</button>
+  </div>
+
+  <!-- TAB 1: FORECAST & CAPACITY -->
+  <div class="tab-content active" id="tab-forecast-content">
+    <!-- Summary Cards -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-header" id="metric-header-demand">Forecasted Orders (Demand)</div>
+        <div class="metric-value" id="stat-forecast-demand">0</div>
+        <div class="metric-sub" id="stat-forecast-date-range">dates</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header" id="metric-header-capacity">Estimated Capacity (Deliveries)</div>
+        <div class="metric-value" id="stat-estimated-capacity">0</div>
+        <div class="metric-sub" id="stat-productivity-rate">Rate info</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header" id="metric-header-surplus">Surplus / Shortage</div>
+        <div class="metric-value" id="stat-net-surplus">0</div>
+        <div class="metric-sub" id="stat-net-surplus-status">Status</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header" id="metric-header-hiring">Hiring & Staff Deficit</div>
+        <div class="metric-value" id="stat-hiring-deficit">0 Drivers</div>
+        <div class="metric-sub" id="stat-hiring-sub">0 deliveries deficit</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-header" id="metric-header-peak">Max Driver Needed (Weekly Peak)</div>
+        <div class="metric-value" id="stat-max-drivers">0 Drivers</div>
+        <div class="metric-sub" id="stat-max-drivers-time">Peak slot info</div>
+      </div>
+
+      <div class="metric-card recommendation-card">
+        <div class="metric-header" id="metric-header-rec" style="color: #2563eb;">💡 Weekly Operations Recommendation</div>
+        <div class="metric-value" style="font-size: 16px; font-weight: 500; letter-spacing: 0; line-height: 1.45; margin-top: 8px; color: #1e293b;" id="stat-staffing-rec">
+          Calculating recommendation...
+        </div>
+      </div>
     </div>
 
-    <div class="metric-card">
-      <div class="metric-header" id="metric-header-capacity">Estimated Capacity (Deliveries)</div>
-      <div class="metric-value" id="stat-estimated-capacity">0</div>
-      <div class="metric-sub" id="stat-productivity-rate">Rate info</div>
-    </div>
+    <!-- Calendar Table and Auditor Panel -->
+    <div class="dashboard-container">
+      <div class="grid-container">
+        <!-- Sub-controls inside the card -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div class="control-group">
+            <span class="control-label" id="label-week">Forecast Week</span>
+            <div class="week-selector" id="week-selector">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+          <div class="control-group">
+            <span class="control-label" id="label-productivity">Productivity Baseline (orders/hr)</span>
+            <input type="number" id="productivity-input" value="2.00" step="0.05" min="0.1" max="10.0" style="width: 110px; font-family: inherit;">
+          </div>
+        </div>
 
-    <div class="metric-card">
-      <div class="metric-header" id="metric-header-surplus">Surplus / Shortage</div>
-      <div class="metric-value" id="stat-net-surplus">0</div>
-      <div class="metric-sub" id="stat-net-surplus-status">Status</div>
-    </div>
+        <table id="calendar-grid">
+          <thead>
+            <tr id="grid-header-row"></tr>
+          </thead>
+          <tbody id="grid-body"></tbody>
+        </table>
+      </div>
 
-    <div class="metric-card">
-      <div class="metric-header" id="metric-header-hiring">Hiring & Staff Deficit</div>
-      <div class="metric-value" id="stat-hiring-deficit">0 Drivers</div>
-      <div class="metric-sub" id="stat-hiring-sub">0 deliveries deficit</div>
-    </div>
+      <!-- Auditing Side-Drawer Panel -->
+      <div class="auditor-panel" id="auditor-panel">
+        <!-- Default state -->
+        <div class="placeholder-panel" id="panel-placeholder">
+          <div class="placeholder-icon">📊</div>
+          <h3>Select a Time Slot</h3>
+          <p>Click any cell in the calendar grid to view detailed calculations, mathematical formulas, and historical audit logs.</p>
+        </div>
 
-    <div class="metric-card">
-      <div class="metric-header" id="metric-header-peak">Max Driver Needed (Weekly Peak)</div>
-      <div class="metric-value" id="stat-max-drivers">0 Drivers</div>
-      <div class="metric-sub" id="stat-max-drivers-time">Peak slot info</div>
-    </div>
+        <!-- Detail contents -->
+        <div class="panel-content" id="panel-content" style="display: none;">
+          <div class="panel-header">
+            <div>
+              <h2 id="panel-title-time">Slot Details</h2>
+              <span id="panel-title-date" style="font-size: 13px; color: var(--text-muted);">Monday, June 01</span>
+            </div>
+            <button class="close-panel-btn" id="close-panel-btn">×</button>
+          </div>
 
-    <div class="metric-card recommendation-card">
-      <div class="metric-header" id="metric-header-rec" style="color: #2563eb;">💡 Weekly Operations Recommendation</div>
-      <div class="metric-value" style="font-size: 16px; font-weight: 500; letter-spacing: 0; line-height: 1.45; margin-top: 8px; color: #1e293b;" id="stat-staffing-rec">
-        Calculating recommendation...
+          <div>
+            <div class="panel-section-title" id="panel-sec-metrics">Operational metrics</div>
+            <div class="detail-row">
+              <span class="detail-label" id="label-val-demand">Forecasted Demand (June)</span>
+              <span class="detail-val highlight" id="panel-val-demand">0</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" id="label-val-historical">Historical Completions (May)</span>
+              <span class="detail-val" id="panel-val-historical-completions">0</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" id="label-val-active">Estimated Active Drivers</span>
+              <span class="detail-val highlight" id="panel-val-active-drivers">0</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" id="label-val-capacity">Total Delivery Capacity</span>
+              <span class="detail-val" id="panel-val-capacity">0</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" id="label-val-balance">Capacity Net Balance</span>
+              <span class="detail-val highlight" id="panel-val-balance">0</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" id="label-val-drivers-needed">Drivers Needed</span>
+              <span class="detail-val" id="panel-val-drivers-needed">0</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label" id="label-val-utilization">Capacity Utilization</span>
+              <span class="detail-val highlight" id="panel-val-utilization">0%</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel-section-title" id="panel-sec-math">Mathematical audit path</div>
+            <div class="math-box" id="panel-math-box"></div>
+          </div>
+
+          <div>
+            <div class="panel-section-title" id="panel-sec-explanation">Explanation</div>
+            <div class="explanation-box" id="panel-explanation-text"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Calendar Table and Auditor Panel -->
-  <div class="dashboard-container">
-    <div class="grid-container">
-      <table id="calendar-grid">
-        <thead>
-          <tr id="grid-header-row"></tr>
-        </thead>
-        <tbody id="grid-body"></tbody>
-      </table>
-    </div>
+  <!-- TAB 2: COST & RESTRICTURING -->
+  <div class="tab-content" id="tab-cost-content">
+    <div class="cost-tab-layout">
+      <!-- Sidebar Control Panel -->
+      <div class="cost-sidebar">
+        <div class="panel-section-title" id="cost-label-controls">Simulation controls</div>
+        
+        <div class="sim-form-group">
+          <label id="cost-label-policy">Gewerbe Mileage Policy</label>
+          <select id="cost-policy-selector" onchange="runCostSimulation()">
+            <option value="standard" selected>Standard (Pay all Km)</option>
+            <option value="policy-a">Policy A (No Km in Red)</option>
+            <option value="policy-b">Policy B (Cap Km to Margin)</option>
+          </select>
+        </div>
 
-    <!-- Auditing Side-Drawer Panel -->
-    <div class="auditor-panel" id="auditor-panel">
-      <!-- Default state -->
-      <div class="placeholder-panel" id="panel-placeholder">
-        <div class="placeholder-icon">📊</div>
-        <h3>Select a Time Slot</h3>
-        <p>Click any cell in the calendar grid to view detailed calculations, mathematical formulas, and historical audit logs.</p>
+        <div class="sim-form-group">
+          <label id="cost-label-commission">Commission Model</label>
+          <select id="cost-commission-selector" onchange="runCostSimulation()">
+            <option value="flat-8" selected>Standard Flat 8%</option>
+            <option value="tiered">Tiered Progressive (8%-15%)</option>
+          </select>
+        </div>
+
+        <hr style="border: 1px solid rgba(0,0,0,0.06);">
+
+        <div class="panel-section-title" id="cost-label-summary">City aggregates</div>
+        
+        <div class="detail-row">
+          <span class="detail-label" id="cost-lbl-hours">Total Active Hours</span>
+          <span class="detail-val" id="cost-val-hours">0 h</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label" id="cost-lbl-tph">Average Trips/Hr</span>
+          <span class="detail-val" id="cost-val-tph">0.00</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label" id="cost-lbl-kph">Average Km/Hr</span>
+          <span class="detail-val" id="cost-val-kph">0.00</span>
+        </div>
       </div>
 
-      <!-- Detail contents -->
-      <div class="panel-content" id="panel-content" style="display: none;">
-        <div class="panel-header">
-          <div>
-            <h2 id="panel-title-time">Slot Details</h2>
-            <span id="panel-title-date" style="font-size: 13px; color: var(--text-muted);">Monday, June 01</span>
+      <!-- Main Cost Analytics -->
+      <div class="cost-main">
+        <!-- KPI Cards Grid -->
+        <div class="metrics-grid" style="margin-bottom: 0;">
+          <div class="metric-card">
+            <div class="metric-header" id="cost-lbl-avg-cost">Avg Cost per Employee/Hour</div>
+            <div class="metric-value" id="cost-val-avg-cost">0.00 EUR</div>
+            <div class="metric-sub" id="cost-val-avg-cost-status">Status</div>
           </div>
-          <button class="close-panel-btn" id="close-panel-btn">×</button>
-        </div>
+          
+          <div class="metric-card">
+            <div class="metric-header" id="cost-lbl-target">Restructuring Target</div>
+            <div class="metric-value" style="color: #2563eb;">22.50 EUR</div>
+            <div class="metric-sub" id="cost-lbl-target-sub">Maximum limit/hour</div>
+          </div>
 
-        <div>
-          <div class="panel-section-title" id="panel-sec-metrics">Operational metrics</div>
-          <div class="detail-row">
-            <span class="detail-label" id="label-val-demand">Forecasted Demand (June)</span>
-            <span class="detail-val highlight" id="panel-val-demand">0</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label" id="label-val-historical">Historical Completions (May)</span>
-            <span class="detail-val" id="panel-val-historical-completions">0</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label" id="label-val-active">Estimated Active Drivers</span>
-            <span class="detail-val highlight" id="panel-val-active-drivers">0</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label" id="label-val-capacity">Total Delivery Capacity</span>
-            <span class="detail-val" id="panel-val-capacity">0</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label" id="label-val-balance">Capacity Net Balance</span>
-            <span class="detail-val highlight" id="panel-val-balance">0</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label" id="label-val-drivers-needed">Drivers Needed</span>
-            <span class="detail-val" id="panel-val-drivers-needed">0</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label" id="label-val-utilization">Capacity Utilization</span>
-            <span class="detail-val highlight" id="panel-val-utilization">0%</span>
+          <div class="metric-card" style="background: linear-gradient(135deg, #f0fdf4 0%, #f0fdf4 100%); border-color: rgba(72,187,120,0.15);">
+            <div class="metric-header" id="cost-lbl-profit">Simulated Gewerbe Net Profit</div>
+            <div class="metric-value" id="cost-val-profit" style="color: #166534;">0.00 EUR</div>
+            <div class="metric-sub" id="cost-val-savings">Savings info</div>
           </div>
         </div>
 
-        <div>
-          <div class="panel-section-title" id="panel-sec-math">Mathematical audit path</div>
-          <div class="math-box" id="panel-math-box"></div>
+        <!-- Cost Bars Visual Chart -->
+        <div class="cost-chart-container">
+          <div class="cost-chart-title">
+            <span id="cost-lbl-chart-title">Contract & Vehicle Cost per Hour Comparison</span>
+            <span style="font-size: 12px; font-weight: 500; color: var(--text-muted);" id="cost-lbl-limit-info">Target: ≤ 22.50 EUR (Solid Line)</span>
+          </div>
+          <div id="cost-bars-list">
+            <!-- Dynamically populated -->
+          </div>
         </div>
 
-        <div>
-          <div class="panel-section-title" id="panel-sec-explanation">Explanation</div>
-          <div class="explanation-box" id="panel-explanation-text"></div>
+        <!-- Restructuring Plan specific to City -->
+        <div class="checklist-container">
+          <div class="checklist-title" id="cost-lbl-plan-title">Fleet Restructuring Action Plan</div>
+          <div id="cost-action-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Hierarchy of Rationality -->
+        <div class="hierarchy-card">
+          <div class="checklist-title" id="cost-lbl-hierarchy-title">Hierarchy of Hiring Rationality</div>
+          <table class="hierarchy-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Poz</th>
+                <th id="cost-th-contract">Contract type</th>
+                <th id="cost-th-vehicle">Vehicle</th>
+                <th id="cost-th-tax">Tax Rate</th>
+                <th id="cost-th-est-cost">Est. Cost/Hour</th>
+                <th id="cost-th-status">Status (Cap 22.50)</th>
+              </tr>
+            </thead>
+            <tbody id="cost-hierarchy-body">
+              <!-- Filled in JS -->
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -731,6 +1089,7 @@
     let currentProductivity = 2.0;
     let activeCellId = null;
     let currentLang = 'en';
+    let activeTab = 'forecast';
 
     const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -741,6 +1100,834 @@
       TIME_SLOTS.push(`${hStr}:30`);
     }
 
+    // Embed the python-generated COST_DB
+    const COST_DB = {
+  "Augsburg": {
+    "salaries_name": "Augsburg",
+    "total_hours": 5117.00203950996,
+    "avg_cost_hour": 26.328390850119067,
+    "tph": 1.7916740953415746,
+    "kph": 10.377742590285445,
+    "total_fare": 77714.73999999999,
+    "total_mileage": 10128.92,
+    "driver_weeks": 338,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Bicycle",
+        "hours": 116.00007212829642,
+        "trips": 230,
+        "tph": 1.9827573878197189,
+        "kph": 5.872841175879059,
+        "cost_hour": 24.80989648479075
+      },
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 417.9998957338668,
+        "trips": 759,
+        "tph": 1.815789926615776,
+        "kph": 10.214619772820347,
+        "cost_hour": 27.92017998718951
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 161.99989614931155,
+        "trips": 202,
+        "tph": 1.246914379585906,
+        "kph": 5.635620896685864,
+        "cost_hour": 23.222489287244965
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 4266.002336623203,
+        "trips": 7604,
+        "tph": 1.7824650340016042,
+        "kph": 10.818566507521444,
+        "cost_hour": 26.496294477058456
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Bicycle",
+        "hours": 154.9998388752833,
+        "trips": 373,
+        "tph": 2.406454114446693,
+        "kph": 7.012716967238934,
+        "cost_hour": 21.797136000223748
+      }
+    ]
+  },
+  "Berlin": {
+    "salaries_name": "Berlin",
+    "total_hours": 35650.9894881208,
+    "avg_cost_hour": 25.517093386145774,
+    "tph": 2.0168865165428014,
+    "kph": 9.724033329159454,
+    "total_fare": 560687.99,
+    "total_mileage": 67432.64,
+    "driver_weeks": 1488,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Bicycle",
+        "hours": 2159.0037489348333,
+        "trips": 4364,
+        "tph": 2.0213026504252363,
+        "kph": 6.611586481516043,
+        "cost_hour": 25.053079652288023
+      },
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 1709.9972136186884,
+        "trips": 3342,
+        "tph": 1.9543891495166088,
+        "kph": 11.06611159906816,
+        "cost_hour": 28.34059930598862
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 6852.010303459046,
+        "trips": 13226,
+        "tph": 1.930236443649716,
+        "kph": 6.531729816198094,
+        "cost_hour": 23.499456705412545
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 19911.98483044412,
+        "trips": 40632,
+        "tph": 2.040580100175465,
+        "kph": 11.943357331027846,
+        "cost_hour": 27.01773117111718
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Bicycle",
+        "hours": 5011.993391664118,
+        "trips": 10333,
+        "tph": 2.061654753413225,
+        "kph": 6.15735448720403,
+        "cost_hour": 21.55344334968412
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Car",
+        "hours": 6.0,
+        "trips": 7,
+        "tph": 1.1666666666666667,
+        "kph": 6.983333333333334,
+        "cost_hour": 22.783500000000004
+      }
+    ]
+  },
+  "Bielefeld": {
+    "salaries_name": "Bielefeld",
+    "total_hours": 5346.998598482435,
+    "avg_cost_hour": 26.469046618606196,
+    "tph": 2.1649528771684095,
+    "kph": 11.437309898932245,
+    "total_fare": 96401.66,
+    "total_mileage": 12567.48,
+    "driver_weeks": 204,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Bicycle",
+        "hours": 93.00020656344309,
+        "trips": 190,
+        "tph": 2.043006214941957,
+        "kph": 6.615254123982058,
+        "cost_hour": 25.0542710864216
+      },
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 193.000082393719,
+        "trips": 394,
+        "tph": 2.041449905685752,
+        "kph": 10.81191248272705,
+        "cost_hour": 28.21511012388234
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 996.999049590492,
+        "trips": 2124,
+        "tph": 2.1303932043590343,
+        "kph": 9.533619920604831,
+        "cost_hour": 24.427265661265867
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 3804.99895544836,
+        "trips": 8299,
+        "tph": 2.18107812831767,
+        "kph": 12.211461959396216,
+        "cost_hour": 27.14204875893758
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Bicycle",
+        "hours": 88.00016324509103,
+        "trips": 166,
+        "tph": 1.8863601370564516,
+        "kph": 5.141240462701507,
+        "cost_hour": 21.26397714564232
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Car",
+        "hours": 171.00014124133017,
+        "trips": 403,
+        "tph": 2.356723199609827,
+        "kph": 11.879054515710756,
+        "cost_hour": 24.87555210226743
+      }
+    ]
+  },
+  "Frankfurt": {
+    "salaries_name": "Frankfurt am Main",
+    "total_hours": 24083.996303745276,
+    "avg_cost_hour": 28.109470122984874,
+    "tph": 1.9414552057844616,
+    "kph": 14.611491197799092,
+    "total_fare": 424178.62,
+    "total_mileage": 67838.57,
+    "driver_weeks": 921,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Bicycle",
+        "hours": 169.00008396545,
+        "trips": 350,
+        "tph": 2.0710048882079444,
+        "kph": 12.242834153993616,
+        "cost_hour": 26.906688500720158
+      },
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 1270.9996074574935,
+        "trips": 2354,
+        "tph": 1.8520855444707327,
+        "kph": 13.373528913987853,
+        "cost_hour": 29.47989407664051
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 2663.0001842676165,
+        "trips": 5361,
+        "tph": 2.013142932423188,
+        "kph": 13.954876991576446,
+        "cost_hour": 25.793758135325465
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 19980.996428054717,
+        "trips": 38693,
+        "tph": 1.936490011362613,
+        "kph": 14.79778403767954,
+        "cost_hour": 28.34110037999036
+      }
+    ]
+  },
+  "Freiburg": {
+    "salaries_name": "Freiburg im Breisgau",
+    "total_hours": 2447.0007720495123,
+    "avg_cost_hour": 27.20301231707363,
+    "tph": 2.105843226066516,
+    "kph": 11.743478109298511,
+    "total_fare": 45117.340000000004,
+    "total_mileage": 5706.1,
+    "driver_weeks": 126,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 546.00103719162,
+        "trips": 1201,
+        "tph": 2.199629521177094,
+        "kph": 10.17673890983825,
+        "cost_hour": 27.901488694399685
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 217.999972781778,
+        "trips": 433,
+        "tph": 1.986238780100404,
+        "kph": 7.409083493862749,
+        "cost_hour": 23.770647883956325
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 1682.9997620761146,
+        "trips": 3519,
+        "tph": 2.090909386498684,
+        "kph": 12.813198483996416,
+        "cost_hour": 27.4210079073227
+      }
+    ]
+  },
+  "Gütersloh": {
+    "salaries_name": "Gütersloh",
+    "total_hours": 0.0,
+    "avg_cost_hour": 0.0,
+    "tph": 0.0,
+    "kph": 0.0,
+    "total_fare": 0.0,
+    "total_mileage": 0.0,
+    "driver_weeks": 0,
+    "mix": []
+  },
+  "Heidelberg": {
+    "salaries_name": "Heidelberg",
+    "total_hours": 4111.996629921399,
+    "avg_cost_hour": 27.817239363696316,
+    "tph": 2.386431916941424,
+    "kph": 13.462413757147987,
+    "total_fare": 88204.06,
+    "total_mileage": 11422.73,
+    "driver_weeks": 147,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Bicycle",
+        "hours": 1.0,
+        "trips": 1,
+        "tph": 1.0,
+        "kph": 8.88,
+        "cost_hour": 25.7997
+      },
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 215.9998492147,
+        "trips": 545,
+        "tph": 2.5231499095088705,
+        "kph": 13.806259637875003,
+        "cost_hour": 29.693541396454712
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 3894.996780706699,
+        "trips": 9267,
+        "tph": 2.3792060742906744,
+        "kph": 13.444522023584002,
+        "cost_hour": 27.71370566662349
+      }
+    ]
+  },
+  "Heilbronn": {
+    "salaries_name": "Heilbronn",
+    "total_hours": 2185.999618252071,
+    "avg_cost_hour": 27.076984126159278,
+    "tph": 2.17246149557762,
+    "kph": 12.48506622422149,
+    "total_fare": 35072.259999999995,
+    "total_mileage": 5568.580000000001,
+    "driver_weeks": 103,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 393.0000346998477,
+        "trips": 936,
+        "tph": 2.381679179023143,
+        "kph": 12.5379123789729,
+        "cost_hour": 29.067301843685943
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 584.0001562535797,
+        "trips": 1234,
+        "tph": 2.1130131332776267,
+        "kph": 12.372890525156787,
+        "cost_hour": 25.30482892378733
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 1208.9994272986437,
+        "trips": 2579,
+        "tph": 2.133168917840143,
+        "kph": 12.52207375633468,
+        "cost_hour": 27.28603632033925
+      }
+    ]
+  },
+  "Ingolstadt": {
+    "salaries_name": "Ingolstadt",
+    "total_hours": 2315.0010784449587,
+    "avg_cost_hour": 26.62994482666401,
+    "tph": 1.9909277982263296,
+    "kph": 11.401290585026198,
+    "total_fare": 47830.36,
+    "total_mileage": 5270.82,
+    "driver_weeks": 106,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 366.0002362487688,
+        "trips": 754,
+        "tph": 2.060107959841614,
+        "kph": 11.792342114955447,
+        "cost_hour": 28.69917583354152
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 402.9998304129682,
+        "trips": 870,
+        "tph": 2.1588098414544743,
+        "kph": 12.512610724507477,
+        "cost_hour": 25.34798356298477
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 1477.0008965811585,
+        "trips": 2884,
+        "tph": 1.9526054497838483,
+        "kph": 11.299891583432712,
+        "cost_hour": 26.719441319705744
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Bicycle",
+        "hours": 69.00011520206331,
+        "trips": 101,
+        "tph": 1.4637656720460055,
+        "kph": 5.006803234868649,
+        "cost_hour": 21.2256746325749
+      }
+    ]
+  },
+  "Karlsruhe": {
+    "salaries_name": "Karlsruhe",
+    "total_hours": 2927.999438275894,
+    "avg_cost_hour": 27.817333359628847,
+    "tph": 2.3565578291445832,
+    "kph": 13.056952641531778,
+    "total_fare": 63662.18,
+    "total_mileage": 7659.129999999999,
+    "driver_weeks": 151,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Bicycle",
+        "hours": 68.99996079331342,
+        "trips": 169,
+        "tph": 2.4492767540293627,
+        "kph": 7.838265323368288,
+        "cost_hour": 25.45684109160804
+      },
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 526.0000843187647,
+        "trips": 1182,
+        "tph": 2.247147928751449,
+        "kph": 10.667850000950695,
+        "cost_hour": 28.143963310848765
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 74.99991617456266,
+        "trips": 192,
+        "tph": 2.5600028612447927,
+        "kph": 8.415342738930473,
+        "cost_hour": 24.08162935562372
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 2257.9994769892533,
+        "trips": 5357,
+        "tph": 2.372454048192632,
+        "kph": 13.927137858300608,
+        "cost_hour": 27.93745915327105
+      }
+    ]
+  },
+  "Leipzig": {
+    "salaries_name": "Leipzig",
+    "total_hours": 3001.0018352376374,
+    "avg_cost_hour": 24.332811591359192,
+    "tph": 1.482504924775463,
+    "kph": 6.300902511278428,
+    "total_fare": 48178.64,
+    "total_mileage": 3691.6299999999997,
+    "driver_weeks": 125,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 78.9997634250036,
+        "trips": 116,
+        "tph": 1.468358827556764,
+        "kph": 6.84318504970226,
+        "cost_hour": 26.255580505959617
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 189.00021467907493,
+        "trips": 296,
+        "tph": 1.5661357872138515,
+        "kph": 3.737297342224677,
+        "cost_hour": 22.63577146343889
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 2635.002639716344,
+        "trips": 3893,
+        "tph": 1.4774178747764284,
+        "kph": 6.575765708479614,
+        "cost_hour": 24.52928660817265
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Bicycle",
+        "hours": 97.99921741721502,
+        "trips": 144,
+        "tph": 1.469399489048412,
+        "kph": 3.417374228349397,
+        "cost_hour": 20.772890012241216
+      }
+    ]
+  },
+  "München": {
+    "salaries_name": "Munich",
+    "total_hours": 28586.00212706133,
+    "avg_cost_hour": 28.294997920784972,
+    "tph": 2.117120111129773,
+    "kph": 15.033973904072466,
+    "total_fare": 535032.71,
+    "total_mileage": 84049.06,
+    "driver_weeks": 1059,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Bicycle",
+        "hours": 432.9987796866024,
+        "trips": 983,
+        "tph": 2.270214250283753,
+        "kph": 7.850945913659313,
+        "cost_hour": 25.46100983708172
+      },
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 1757.0012121241075,
+        "trips": 3764,
+        "tph": 2.1422865129669164,
+        "kph": 14.481259218506882,
+        "cost_hour": 30.026825363573817
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 3123.997030582492,
+        "trips": 6428,
+        "tph": 2.057620393704873,
+        "kph": 13.703806239539752,
+        "cost_hour": 25.716158789855424
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 22886.0050002402,
+        "trips": 48550,
+        "tph": 2.1213837888915275,
+        "kph": 15.499895678440906,
+        "cost_hour": 28.66662796885042
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Bicycle",
+        "hours": 358.0001292759116,
+        "trips": 746,
+        "tph": 2.083798130209769,
+        "kph": 8.397399202286488,
+        "cost_hour": 22.19158899749423
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Car",
+        "hours": 27.99997515201592,
+        "trips": 49,
+        "tph": 1.7500015530003832,
+        "kph": 13.234297458771875,
+        "cost_hour": 25.454648914121343
+      }
+    ]
+  },
+  "Nürnberg": {
+    "salaries_name": "Nuremberg",
+    "total_hours": 4102.000552560308,
+    "avg_cost_hour": 25.842506099238417,
+    "tph": 1.8125302287829688,
+    "kph": 10.008645653247116,
+    "total_fare": 68724.69,
+    "total_mileage": 8397.48,
+    "driver_weeks": 270,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Bicycle",
+        "hours": 192.99964476156725,
+        "trips": 408,
+        "tph": 2.1139935283510254,
+        "kph": 5.0350351742901776,
+        "cost_hour": 24.53411344567592
+      },
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 705.0008550772296,
+        "trips": 1212,
+        "tph": 1.719146851059111,
+        "kph": 10.859915906288215,
+        "cost_hour": 28.238805468123783
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 561.9997938267708,
+        "trips": 1009,
+        "tph": 1.7953743241247724,
+        "kph": 9.615252637736097,
+        "cost_hour": 24.452494694344804
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 2040.99858858591,
+        "trips": 3570,
+        "tph": 1.7491437867546231,
+        "kph": 11.44483398010776,
+        "cost_hour": 26.78662106107938
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Bicycle",
+        "hours": 593.0016703088306,
+        "trips": 1226,
+        "tph": 2.0674478022321736,
+        "kph": 6.117301487718897,
+        "cost_hour": 21.542031332902333
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Car",
+        "hours": 8.0,
+        "trips": 10,
+        "tph": 1.25,
+        "kph": 4.6537500000000005,
+        "cost_hour": 21.787975
+      }
+    ]
+  },
+  "Potsdam": {
+    "salaries_name": "Potsdam",
+    "total_hours": 3248.0015076374398,
+    "avg_cost_hour": 25.40994457117731,
+    "tph": 1.8943956723947533,
+    "kph": 9.824139528558938,
+    "total_fare": 50060.9,
+    "total_mileage": 6507.5,
+    "driver_weeks": 440,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Bicycle",
+        "hours": 88.99983167740275,
+        "trips": 145,
+        "tph": 1.6292165644265573,
+        "kph": 8.153049127442749,
+        "cost_hour": 25.560477781595456
+      },
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 327.99986439735994,
+        "trips": 716,
+        "tph": 2.1829277317401328,
+        "kph": 12.870919955276603,
+        "cost_hour": 29.23173314559845
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 484.0002172711213,
+        "trips": 888,
+        "tph": 1.8347099201870216,
+        "kph": 6.473199573472461,
+        "cost_hour": 23.481394781864388
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 1646.000209116928,
+        "trips": 3064,
+        "tph": 1.8614821450380143,
+        "kph": 11.14521729607922,
+        "cost_hour": 26.64771486551304
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Bicycle",
+        "hours": 701.0013851746276,
+        "trips": 1340,
+        "tph": 1.9115511443193376,
+        "kph": 7.822352588695672,
+        "cost_hour": 22.027789755272515
+      }
+    ]
+  },
+  "Regensburg": {
+    "salaries_name": "Regensburg",
+    "total_hours": 619.0004234738707,
+    "avg_cost_hour": 26.9575718274739,
+    "tph": 2.0710809740732206,
+    "kph": 10.754257586192105,
+    "total_fare": 9928.820000000002,
+    "total_mileage": 1254.5900000000001,
+    "driver_weeks": 27,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 173.0001141397381,
+        "trips": 397,
+        "tph": 2.29479617382986,
+        "kph": 11.98155278860522,
+        "cost_hour": 28.79260991915164
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 446.00030933413257,
+        "trips": 885,
+        "tph": 1.9843035564734992,
+        "kph": 10.278199149332249,
+        "cost_hour": 26.245774564855456
+      }
+    ]
+  },
+  "Ulm": {
+    "salaries_name": "Ulm",
+    "total_hours": 2122.0004560253165,
+    "avg_cost_hour": 26.34152956482302,
+    "tph": 1.9420353979183285,
+    "kph": 10.197929005412911,
+    "total_fare": 32333.79,
+    "total_mileage": 4472.02,
+    "driver_weeks": 212,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Bicycle",
+        "hours": 101.0002089037693,
+        "trips": 212,
+        "tph": 2.099005559503236,
+        "kph": 6.633847664992255,
+        "cost_hour": 25.06041291760372
+      },
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 275.0002964211162,
+        "trips": 492,
+        "tph": 1.7890889806408994,
+        "kph": 9.26904455439806,
+        "cost_hour": 27.453304466935688
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Bicycle",
+        "hours": 146.99985398414526,
+        "trips": 194,
+        "tph": 1.319729202050255,
+        "kph": 10.101710714353226,
+        "cost_hour": 24.60285384968753
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 1599.0000967162855,
+        "trips": 3223,
+        "tph": 2.0156346498156994,
+        "kph": 10.591650391253856,
+        "cost_hour": 26.391085345199848
+      }
+    ]
+  },
+  "Worms": {
+    "salaries_name": "Worms",
+    "total_hours": 878.9996161565654,
+    "avg_cost_hour": 25.770597100738804,
+    "tph": 1.7360644668679723,
+    "kph": 7.740845246043943,
+    "total_fare": 12426.810000000001,
+    "total_mileage": 1248.5300000000002,
+    "driver_weeks": 46,
+    "mix": [
+      {
+        "contract": "Minijob",
+        "vehicle": "Bicycle",
+        "hours": 61.99992361019797,
+        "trips": 103,
+        "tph": 1.66129236944831,
+        "kph": 5.088232075629693,
+        "cost_hour": 24.551640793524
+      },
+      {
+        "contract": "Minijob",
+        "vehicle": "Car",
+        "hours": 444.00000909237,
+        "trips": 790,
+        "tph": 1.779279242842646,
+        "kph": 8.36389622511793,
+        "cost_hour": 27.006410053407222
+      },
+      {
+        "contract": "TZ",
+        "vehicle": "Car",
+        "hours": 317.9996954688081,
+        "trips": 548,
+        "tph": 1.7232720905349173,
+        "kph": 7.546233641709198,
+        "cost_hour": 24.979185800485094
+      },
+      {
+        "contract": "Werkstundent",
+        "vehicle": "Bicycle",
+        "hours": 54.99998798518925,
+        "trips": 85,
+        "tph": 1.5454548830608716,
+        "kph": 6.826546945812176,
+        "cost_hour": 21.74410146080988
+      }
+    ]
+  }
+};
+
     const TRANSLATIONS = {
       en: {
         title: "FLEETCAP: Driver Capacity Prediction Model",
@@ -750,10 +1937,14 @@
         labelProductivity: "Productivity Baseline (orders/hr)",
         labelLanguage: "Language",
         
+        // Tab selectors
+        tabForecast: "📊 Capacity & Forecasting",
+        tabCost: "💸 Cost Structure & Restructuring",
+        
         // Warning banner
         warningBanner: "⚠️ June Forecast not uploaded for {city}. Dashboard displays simulated forecast by scaling Berlin's profile (factor: {factor}%).",
         
-        // Metrics
+        // Metrics Forecast Tab
         metricDemand: "Forecasted Orders (Demand)",
         metricCapacity: "Estimated Capacity (Deliveries)",
         metricSurplusShortage: "Surplus / Shortage",
@@ -761,10 +1952,10 @@
         metricPeakDrivers: "Max Driver Needed (Weekly Peak)",
         metricRecommendation: "💡 Weekly Operations Recommendation",
         
-        // Subtexts
+        // Subtexts Forecast Tab
         sufficientCapacity: "🟢 Sufficient Weekly Capacity",
         staffingDeficit: "🔴 Staffing Deficit",
-        hiringDeficitSub: "Deficit: <span style=\"color: var(--color-red-text); font-weight: 600;\">{deficit} deliv</span> ({hours} hrs)",
+        hiringDeficitSub: "Deficit: <span style='color: var(--color-red-text); font-weight: 600;'>{deficit} deliv</span> ({hours} hrs)",
         fullyStaffed: "🟢 Fully staffed (0 deficit slots)",
         peakSlotInfo: "Peak slot: {day} at {slot}",
         rateInfo: "At {rate} deliveries/hr per active driver",
@@ -817,12 +2008,46 @@
         mathBalanceHeader: "2. Net Balance (S)",
         mathBalanceFormula: "S = Capacity (C) - Demand (D)<br>S = {capacity} - {demand}<br><strong>S = {balance} deliveries</strong>",
         mathAuditHeader: "3. Driver Audit",
-        mathAuditSurplus: "Surplus Drivers = S / P_30<br>Surplus = {balance} / {p30} = {surplus}<br><div class=\"math-result sufficient-result\">Result: +{result} excess drivers</div>",
-        mathAuditDeficit: "Drivers Needed = |S| / P_30<br>Needed = {balance} / {p30} = {deficit}<br><div class=\"math-result\">Result: -{result} drivers needed</div>",
+        mathAuditSurplus: "Surplus Drivers = S / P_30<br>Surplus = {balance} / {p30} = {surplus}<br><div class='math-result sufficient-result'>Result: +{result} excess drivers</div>",
+        mathAuditDeficit: "Drivers Needed = |S| / P_30<br>Needed = {balance} / {p30} = {deficit}<br><div class='math-result'>Result: -{result} drivers needed</div>",
         
         // Explanation Text
         expSufficient: "We expect <strong>{demand}</strong> deliveries. Based on May activity, we anticipate an average of <strong>{active}</strong> active drivers. At {prod} deliveries/hr, this provides a capacity of <strong>{capacity}</strong> completed deliveries. Our fleet has sufficient capacity (surplus of <strong>+{balance}</strong> deliveries), leaving approximately <strong>+{excess}</strong> drivers available.",
         expDeficit: "We expect <strong>{demand}</strong> deliveries. However, historical May data suggests only <strong>{active}</strong> active drivers will be on shift, giving a maximum delivery capacity of <strong>{capacity}</strong> orders. This results in an estimated shortage of <strong>{balance}</strong> deliveries. To prevent delayed orders, we recommend scheduling at least <strong>{add}</strong> additional driver(s) for this 30-minute block.",
+        
+        // Cost Tab Labels
+        costLabelControls: "Simulation controls",
+        costLabelPolicy: "Gewerbe Mileage Policy",
+        costLabelCommission: "Commission Model",
+        costLabelSummary: "City aggregates",
+        costLblHours: "Total Active Hours",
+        costLblTph: "Average Trips/Hr",
+        costLblKph: "Average Km/Hr",
+        costLblAvgCost: "Avg Cost per Employee/Hour",
+        costLblTarget: "Restructuring Target",
+        costLblTargetSub: "Maximum limit/hour",
+        costLblProfit: "Simulated Gewerbe Net Profit",
+        costLblSavings: "Savings info",
+        costLblChartTitle: "Contract & Vehicle Cost per Hour Comparison",
+        costLblLimitInfo: "Target: ≤ 22.50 EUR (Solid Line)",
+        costLblPlanTitle: "Fleet Restructuring Action Plan",
+        costLblHierarchyTitle: "Hierarchy of Hiring Rationality",
+        costThContract: "Contract type",
+        costThVehicle: "Vehicle",
+        costThTax: "Tax Rate",
+        costThEstCost: "Est. Cost/Hour",
+        costThStatus: "Status (Cap 22.50)",
+        
+        // Math/Sim explanation
+        simSavingsText: "Mileage Paid: <strong>{mileage} EUR</strong> • Revenue: <strong>{revenue} EUR</strong><br>Policy Savings: <strong>{savings} EUR</strong> over standard Gewerbe.",
+        simRedExceeded: "⚠️ Exceeds cap by {amt} EUR/h",
+        simGreenCompliant: "🟢 Compliant (under 22.50 EUR/h)",
+        
+        // Hierarchy table badges
+        badgeOptimal: "Optimal",
+        badgeSubLimit: "Compliant",
+        badgeNeconform: "Non-Compliant",
+        badgeEliminate: "Eliminate",
         
         // Weekdays
         days: {
@@ -843,10 +2068,14 @@
         labelProductivity: "Productivitate de Bază (comenzi/oră)",
         labelLanguage: "Limbă",
         
+        // Tab selectors
+        tabForecast: "📊 Capacitate & Prognoză",
+        tabCost: "💸 Structură Costuri & Restructurare",
+        
         // Warning banner
         warningBanner: "⚠️ Prognoza pentru Iunie nu a fost încărcată pentru {city}. Tabloul de bord afișează prognoza simulată prin scalarea profilului Berlinului (factor: {factor}%).",
         
-        // Metrics
+        // Metrics Forecast Tab
         metricDemand: "Comenzi Prognozate (Cerere)",
         metricCapacity: "Capacitate Estimată (Livrări)",
         metricSurplusShortage: "Surplus / Deficit",
@@ -854,10 +2083,10 @@
         metricPeakDrivers: "Șoferi Maximi Necesar (Vârf Săptămânal)",
         metricRecommendation: "💡 Recomandare Săptămânală de Operare",
         
-        // Subtexts
+        // Subtexts Forecast Tab
         sufficientCapacity: "🟢 Capacitate Săptămânală Suficientă",
         staffingDeficit: "🔴 Deficit de Personal",
-        hiringDeficitSub: "Deficit: <span style=\"color: var(--color-red-text); font-weight: 600;\">{deficit} livrări</span> ({hours} ore)",
+        hiringDeficitSub: "Deficit: <span style='color: var(--color-red-text); font-weight: 600;'>{deficit} livrări</span> ({hours} ore)",
         fullyStaffed: "🟢 Personal suficient (0 intervale cu deficit)",
         peakSlotInfo: "Slot de vârf: {day} la {slot}",
         rateInfo: "La {rate} livrări/oră per șofer activ",
@@ -910,12 +2139,46 @@
         mathBalanceHeader: "2. Balanță Netă (S)",
         mathBalanceFormula: "S = Capacitate (C) - Cerere (D)<br>S = {capacity} - {demand}<br><strong>S = {balance} livrări</strong>",
         mathAuditHeader: "3. Audit Șoferi",
-        mathAuditSurplus: "Șoferi în Surplus = S / P_30<br>Surplus = {balance} / {p30} = {surplus}<br><div class=\"math-result sufficient-result\">Rezultat: +{result} șoferi în plus</div>",
-        mathAuditDeficit: "Șoferi Necesar = |S| / P_30<br>Necesar = {balance} / {p30} = {deficit}<br><div class=\"math-result\">Rezultat: -{result} șoferi necesar</div>",
+        mathAuditSurplus: "Șoferi în Surplus = S / P_30<br>Surplus = {balance} / {p30} = {surplus}<br><div class='math-result sufficient-result'>Rezultat: +{result} șoferi în plus</div>",
+        mathAuditDeficit: "Șoferi Necesar = |S| / P_30<br>Necesar = {balance} / {p30} = {deficit}<br><div class='math-result'>Rezultat: -{result} șoferi necesar</div>",
         
         // Explanation Text
         expSufficient: "Ne așteptăm la <strong>{demand}</strong> livrări. Pe baza activității din Mai, anticipăm o medie de <strong>{active}</strong> șoferi activi. La {prod} livrări/oră, aceasta oferă o capacitate de <strong>{capacity}</strong> livrări finalizate. Flota noastră are capacitate suficientă (surplus de <strong>+{balance}</strong> livrări), rămânând aproximativ <strong>+{excess}</strong> șoferi disponibili.",
         expDeficit: "Ne așteptăm la <strong>{demand}</strong> livrări. Totuși, datele istorice din Mai sugerează că doar <strong>{active}</strong> șoferi activi vor fi de serviciu, oferind o capacitate maximă de livrare de <strong>{capacity}</strong> comenzi. Acest lucru duce la un deficit estimat de <strong>{balance}</strong> livrări. Pentru a preveni comenzile întârziate, recomandăm planificarea a cel puțin <strong>{add}</strong> șofer(i) suplimentar(i) pentru acest interval de 30 de minute.",
+        
+        // Cost Tab Labels
+        costLabelControls: "Controale Simulare",
+        costLabelPolicy: "Politică Decontare Km B2B",
+        costLabelCommission: "Model Comision",
+        costLabelSummary: "Aggregate oraș",
+        costLblHours: "Total Ore Active",
+        costLblTph: "TPH Mediu",
+        costLblKph: "KPH Mediu",
+        costLblAvgCost: "Cost Mediu / Angajat / Oră",
+        costLblTarget: "Țintă Restructurare",
+        costLblTargetSub: "Limită maximă / oră",
+        costLblProfit: "Profit Net Gewerbe Simulat",
+        costLblSavings: "Informații economii",
+        costLblChartTitle: "Comparativ Cost pe Oră după Contract & Vehicul",
+        costLblLimitInfo: "Limită: ≤ 22.50 EUR (Linia Solidă)",
+        costLblPlanTitle: "Plan de Acțiune Restructurare Flotă",
+        costLblHierarchyTitle: "Ierarhia Raționalității de Angajare",
+        costThContract: "Tip contract",
+        costThVehicle: "Vehicul",
+        costThTax: "Rată Taxare",
+        costThEstCost: "Cost estimat/oră",
+        costThStatus: "Status (Cap 22.50)",
+        
+        // Math/Sim explanation
+        simSavingsText: "Km Achitați: <strong>{mileage} EUR</strong> • Venit: <strong>{revenue} EUR</strong><br>Economii Politică: <strong>{savings} EUR</strong> vs Gewerbe standard.",
+        simRedExceeded: "⚠️ Depășește pragul cu {amt} EUR/h",
+        simGreenCompliant: "🟢 Conform (sub 22.50 EUR/h)",
+        
+        // Hierarchy table badges
+        badgeOptimal: "Optim",
+        badgeSubLimit: "Conform",
+        badgeNeconform: "Neconform",
+        badgeEliminate: "Elimină",
         
         // Weekdays
         days: {
@@ -938,8 +2201,6 @@
     
     const appSubtitle = document.getElementById('app-subtitle');
     const labelCity = document.getElementById('label-city');
-    const labelWeek = document.getElementById('label-week');
-    const labelProductivity = document.getElementById('label-productivity');
     const langLabel = document.getElementById('lang-label');
     
     const forecastWarningBanner = document.getElementById('forecast-warning-banner');
@@ -997,7 +2258,34 @@
     const panelMathBox = document.getElementById('panel-math-box');
     const panelExplanationText = document.getElementById('panel-explanation-text');
 
-    // Load Preprocessed Data
+    // Cost tab DOM Elements
+    const costPolicySelector = document.getElementById('cost-policy-selector');
+    const costCommissionSelector = document.getElementById('cost-commission-selector');
+    const costValHours = document.getElementById('cost-val-hours');
+    const costValTph = document.getElementById('cost-val-tph');
+    const costValKph = document.getElementById('cost-val-kph');
+    const costValAvgCost = document.getElementById('cost-val-avg-cost');
+    const costValAvgCostStatus = document.getElementById('cost-val-avg-cost-status');
+    const costValProfit = document.getElementById('cost-val-profit');
+    const costValSavings = document.getElementById('cost-val-savings');
+    const costBarsList = document.getElementById('cost-bars-list');
+    const costActionList = document.getElementById('cost-action-list');
+    const costHierarchyBody = document.getElementById('cost-hierarchy-body');
+
+    // Tab switcher
+    function switchTab(tab) {
+      activeTab = tab;
+      document.getElementById('tab-forecast-btn').classList.toggle('active', tab === 'forecast');
+      document.getElementById('tab-cost-btn').classList.toggle('active', tab === 'cost');
+      
+      document.getElementById('tab-forecast-content').classList.toggle('active', tab === 'forecast');
+      document.getElementById('tab-cost-content').classList.toggle('active', tab === 'cost');
+      
+      if (tab === 'cost') {
+        runCostSimulation();
+      }
+    }
+
     async function loadData() {
       try {
         const response = await fetch('dashboard_data.json');
@@ -1016,9 +2304,10 @@
       document.title = t.title;
       appSubtitle.textContent = t.subtitle;
       labelCity.textContent = t.labelCity;
-      labelWeek.textContent = t.labelWeek;
-      labelProductivity.textContent = t.labelProductivity;
       langLabel.textContent = t.labelLanguage;
+      
+      document.getElementById('tab-forecast-btn').textContent = t.tabForecast;
+      document.getElementById('tab-cost-btn').textContent = t.tabCost;
       
       metricHeaderDemand.textContent = t.metricDemand;
       metricHeaderCapacity.textContent = t.metricCapacity;
@@ -1043,6 +2332,28 @@
       labelValBalance.textContent = t.detailBalance;
       labelValDriversNeeded.textContent = t.detailDriversNeeded;
       labelValUtilization.textContent = t.detailUtilization;
+
+      // Translate cost tab elements
+      document.getElementById('cost-label-controls').textContent = t.costLabelControls;
+      document.getElementById('cost-label-policy').textContent = t.costLabelPolicy;
+      document.getElementById('cost-label-commission').textContent = t.costLabelCommission;
+      document.getElementById('cost-label-summary').textContent = t.costLabelSummary;
+      document.getElementById('cost-lbl-hours').textContent = t.costLblHours;
+      document.getElementById('cost-lbl-tph').textContent = t.costLblTph;
+      document.getElementById('cost-lbl-kph').textContent = t.costLblKph;
+      document.getElementById('cost-lbl-avg-cost').textContent = t.costLblAvgCost;
+      document.getElementById('cost-lbl-target').textContent = t.costLblTarget;
+      document.getElementById('cost-lbl-target-sub').textContent = t.costLblTargetSub;
+      document.getElementById('cost-lbl-profit').textContent = t.costLblProfit;
+      document.getElementById('cost-lbl-chart-title').textContent = t.costLblChartTitle;
+      document.getElementById('cost-lbl-limit-info').textContent = t.costLblLimitInfo;
+      document.getElementById('cost-lbl-plan-title').textContent = t.costLblPlanTitle;
+      document.getElementById('cost-lbl-hierarchy-title').textContent = t.costLblHierarchyTitle;
+      document.getElementById('cost-th-contract').textContent = t.costThContract;
+      document.getElementById('cost-th-vehicle').textContent = t.costThVehicle;
+      document.getElementById('cost-th-tax').textContent = t.costThTax;
+      document.getElementById('cost-th-est-cost').textContent = t.costThEstCost;
+      document.getElementById('cost-th-status').textContent = t.costThStatus;
     }
 
     function initDashboard() {
@@ -1068,6 +2379,9 @@
         renderWeekSelector(); // Re-render week buttons to show dates for this city
         closeAuditor();
         updateDashboard();
+        if (activeTab === 'cost') {
+          runCostSimulation();
+        }
       });
 
       productivityInput.addEventListener('input', (e) => {
@@ -1090,6 +2404,9 @@
         if (activeCellId) {
           const [wday, slotTime] = activeCellId.split('|');
           showCellAudit(wday, slotTime);
+        }
+        if (activeTab === 'cost') {
+          runCostSimulation();
         }
       });
 
@@ -1170,7 +2487,6 @@
       if (cityForecasts && cityForecasts[weekIdx] && cityForecasts[weekIdx].days[weekday]) {
         return cityForecasts[weekIdx].days[weekday].slots[timeSlot] || 0;
       } else {
-        // Scale Berlin forecast to other cities using their historical ratios
         const cityCompletions = getCityHistoricalVolume(city);
         const berlinCompletions = getCityHistoricalVolume('Berlin');
         const ratio = berlinCompletions > 0 ? (cityCompletions / berlinCompletions) : 0;
@@ -1196,7 +2512,6 @@
     }
 
     function updateDashboard() {
-      // Toggle banner
       const cityForecasts = appData.forecasts[currentCity];
       if (!cityForecasts) {
         forecastWarningBanner.style.display = 'flex';
@@ -1242,7 +2557,6 @@
           totalForecastDemand += demand;
           totalEstimatedCapacity += capacity;
 
-          // Peak weekly drivers needed (Total required, not just additional)
           const reqDrivers = demand / p30;
           if (reqDrivers > maxWeeklyDrivers) {
             maxWeeklyDrivers = reqDrivers;
@@ -1264,7 +2578,6 @@
         });
       });
 
-      // Find max concurrent driver deficit (hiring count)
       let maxDeficitDrivers = 0;
       if (peakShortages.length > 0) {
         peakShortages.forEach(p => {
@@ -1274,7 +2587,6 @@
         });
       }
 
-      // Update stat cards
       statForecastDemand.textContent = totalForecastDemand.toLocaleString();
       statEstimatedCapacity.textContent = Math.round(totalEstimatedCapacity).toLocaleString();
 
@@ -1291,7 +2603,6 @@
         statNetSurplusStatus.className = 'metric-sub negative';
       }
 
-      // Update hiring deficit card
       if (totalShortageSlots > 0) {
         statHiringDeficit.textContent = `${maxDeficitDrivers} ${TRANSLATIONS[currentLang].drivers}`;
         statHiringDeficit.className = 'metric-value';
@@ -1304,17 +2615,13 @@
         statHiringSub.textContent = TRANSLATIONS[currentLang].fullyStaffed;
       }
 
-      // Update max weekly drivers card
       statMaxDrivers.textContent = `${Math.ceil(maxWeeklyDrivers)} ${TRANSLATIONS[currentLang].drivers}`;
       const translatedMaxDay = TRANSLATIONS[currentLang].days[maxWeeklyDriversDay] || maxWeeklyDriversDay;
       statMaxDriversTime.textContent = TRANSLATIONS[currentLang].peakSlotInfo
         .replace('{day}', translatedMaxDay)
         .replace('{slot}', maxWeeklyDriversSlot);
 
-      // Staffing recommendations
       generateStaffingRecommendation(netSurplusVal, totalShortageSlots, peakShortages, totalSurplusVolume);
-
-      // Render Grid
       renderGrid();
     }
 
@@ -1366,7 +2673,6 @@
     }
 
     function renderGrid() {
-      // Header row
       gridHeaderRow.innerHTML = '';
       const thTime = document.createElement('th');
       thTime.classList.add('time-header');
@@ -1380,7 +2686,6 @@
         const dateStr = selectedWeek.days[day].date;
         const shortDate = dateStr.substring(8, 10) + '/' + dateStr.substring(5, 7);
         
-        // Calculate max driver needed in this day
         let maxDayDrivers = 0;
         const p30 = currentProductivity * 0.5;
         TIME_SLOTS.forEach(slot => {
@@ -1399,12 +2704,10 @@
         gridHeaderRow.appendChild(th);
       });
 
-      // Body rows
       gridBody.innerHTML = '';
       TIME_SLOTS.forEach(slotTime => {
         const tr = document.createElement('tr');
         
-        // Time label cell
         const tdTime = document.createElement('td');
         tdTime.classList.add('time-cell');
         tdTime.textContent = slotTime;
@@ -1567,6 +2870,253 @@
       panelPlaceholder.style.display = 'none';
       panelContent.style.display = 'block';
       auditorPanel.classList.remove('closed');
+    }
+
+    // COST OPTIMIZATION SIMULATION FUNCTIONS
+    function runCostSimulation() {
+      const cityData = COST_DB[currentCity];
+      if (!cityData) {
+        // Clear fields
+        costValHours.textContent = "0 h";
+        costValTph.textContent = "0.00";
+        costValKph.textContent = "0.00";
+        costValAvgCost.textContent = "0.00 EUR/h";
+        costValAvgCostStatus.textContent = "";
+        costValProfit.textContent = "0.00 EUR";
+        costValSavings.textContent = "";
+        costBarsList.innerHTML = "No cost data available for this city.";
+        costActionList.innerHTML = "";
+        return;
+      }
+
+      const t = TRANSLATIONS[currentLang];
+      
+      // Update sidebar details
+      costValHours.textContent = Math.round(cityData.total_hours).toLocaleString() + " h";
+      costValTph.textContent = cityData.tph.toFixed(2);
+      costValKph.textContent = cityData.kph.toFixed(2);
+
+      // Average cost card
+      const avgCost = cityData.avg_cost_hour;
+      costValAvgCost.textContent = avgCost.toFixed(2) + " EUR/h";
+      
+      if (avgCost <= 22.50) {
+        costValAvgCostStatus.textContent = t.simGreenCompliant;
+        costValAvgCostStatus.className = "metric-sub positive";
+      } else {
+        const diff = (avgCost - 22.50).toFixed(2);
+        costValAvgCostStatus.textContent = t.simRedExceeded.replace('{amt}', diff);
+        costValAvgCostStatus.className = "metric-sub negative";
+      }
+
+      // Run Gewerbe simulation based on selectors
+      const policy = costPolicySelector.value;
+      const commModel = costCommissionSelector.value;
+
+      let simulatedProfit = 0;
+      let totalRevenue = 0;
+      let totalMileagePaid = 0;
+      let baseRevenue = cityData.total_fare * 0.08;
+      
+      // Simulated mileage depends on policy
+      // In Standard, we pay all mileage
+      // In Policy A, we pay 0 if 0.08 * Fare < Mileage (or tiered_comm < Mileage)
+      // In Policy B, we pay min(Mileage, 0.08 * Fare)
+      // For tiered: we use the calculated tiered revenue
+      
+      // Since we don't have individual driver-weeks in JS state, we scale the simulation results from Python
+      // Python totals:
+      // Standard Profit = -155,764.48 EUR
+      // Policy A Profit = 216,203.11 EUR (Mileage = 5,718.43)
+      // Policy B Profit = 1,134.98 EUR (Mileage = 220,786.55)
+      // Tiered standard profit = -89,590.22 EUR
+      // Tiered capped profit = 7,590.87 EUR (Mileage = 280,504.93)
+      // Let's compute the city level equivalents by scaling the city's base fare and mileage!
+      
+      const fare = cityData.total_fare;
+      const baseMileage = cityData.total_mileage;
+      
+      if (commModel === 'flat-8') {
+        totalRevenue = fare * 0.08;
+        if (policy === 'standard') {
+          totalMileagePaid = baseMileage;
+        } else if (policy === 'policy-a') {
+          // In Mai, standard mileage paid was 377,686, Policy A mileage was 5,718 (which is 1.51%)
+          totalMileagePaid = baseMileage * 0.0151;
+        } else if (policy === 'policy-b') {
+          // In Mai, Policy B mileage paid was 220,786 (which is 58.45% of standard)
+          totalMileagePaid = baseMileage * 0.5845;
+        }
+      } else { // Tiered progressive
+        // Tiered revenue is on average 10.38% of fare (288,095 / 2,774,019)
+        totalRevenue = fare * 0.10385;
+        if (policy === 'standard') {
+          totalMileagePaid = baseMileage;
+        } else if (policy === 'policy-a') {
+          // With tiered, Policy A mileage paid would be ~1.51%
+          totalMileagePaid = baseMileage * 0.0151;
+        } else if (policy === 'policy-b') {
+          // Capped mileage with tiered paid was 280,504 (which is 74.27% of standard)
+          totalMileagePaid = baseMileage * 0.7427;
+        }
+      }
+      
+      simulatedProfit = totalRevenue - totalMileagePaid;
+      
+      // Update simulated profit card
+      const sign = simulatedProfit >= 0 ? '+' : '';
+      costValProfit.textContent = `${sign}${simulatedProfit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} EUR`;
+      costValProfit.className = simulatedProfit >= 0 ? "metric-value positive" : "metric-value negative";
+      
+      // Calculate savings over standard Gewerbe
+      const standardGewerbeProfit = (fare * 0.08) - baseMileage;
+      const savings = Math.max(0, simulatedProfit - standardGewerbeProfit);
+      
+      costValSavings.innerHTML = t.simSavingsText
+        .replace('{mileage}', Math.round(totalMileagePaid).toLocaleString())
+        .replace('{revenue}', Math.round(totalRevenue).toLocaleString())
+        .replace('{savings}', Math.round(savings).toLocaleString());
+
+      // Render Cost Bars Chart
+      renderCostBars();
+
+      // Render Restructuring Actions
+      renderRestructuringPlan();
+
+      // Render Hierarchy table
+      renderHierarchyTable();
+    }
+
+    function renderCostBars() {
+      const cityData = COST_DB[currentCity];
+      costBarsList.innerHTML = '';
+      
+      if (!cityData || !cityData.mix || cityData.mix.length === 0) {
+        costBarsList.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--text-muted);">No active contract/vehicle combinations in ${currentCity}.</div>`;
+        return;
+      }
+
+      // Sort combinations by Cost per hour ascending (cost-efficiency)
+      const mixSorted = [...cityData.mix].sort((a, b) => a.cost_hour - b.cost_hour);
+
+      mixSorted.forEach(item => {
+        const costVal = item.cost_hour;
+        const isCompliant = costVal <= 22.50;
+        const widthPct = Math.min(100, (costVal / 32) * 100); // Scale relative to 32 EUR
+        
+        const row = document.createElement('div');
+        row.className = 'cost-bar-row';
+        
+        const t = TRANSLATIONS[currentLang];
+        const complianceText = isCompliant ? t.simGreenCompliant : t.simRedExceeded.replace('{amt}', (costVal - 22.50).toFixed(2));
+        const badgeClass = isCompliant ? 'compliant' : 'exceeds';
+        
+        row.innerHTML = `
+          <div class="cost-bar-labels">
+            <span class="cost-bar-name">${item.contract} + ${item.vehicle} <span style="font-weight: 400; font-size: 12px; color: var(--text-muted);">(${Math.round(item.hours)} h)</span></span>
+            <span class="cost-bar-val">${costVal.toFixed(2)} EUR/h • <span class="${isCompliant ? 'green' : 'red'}" style="font-weight:600;">${isCompliant ? 'Conform' : 'Neconform'}</span></span>
+          </div>
+          <div class="cost-bar-track">
+            <div class="cost-bar-fill ${badgeClass}" style="width: ${widthPct}%;"></div>
+            <div class="cost-limit-marker" style="left: ${(22.50/32)*100}%;"></div>
+          </div>
+        `;
+        costBarsList.appendChild(row);
+      });
+    }
+
+    function renderRestructuringPlan() {
+      const cityData = COST_DB[currentCity];
+      costActionList.innerHTML = '';
+
+      if (!cityData) return;
+
+      const actions = [];
+      const hasMinijob = cityData.mix.some(m => m.contract.includes('Minijob'));
+      const hasTZ = cityData.mix.some(m => m.contract.includes('TZ'));
+      const hasCar = cityData.mix.some(m => m.vehicle === 'Car');
+
+      // Tailor steps
+      if (hasMinijob) {
+        actions.push(currentLang === 'ro' 
+          ? "<strong>Eliminarea Minijobs:</strong> Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă." 
+          : "<strong>Eliminate Minijobs:</strong> Firing or converting all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle.");
+      } else {
+        actions.push(currentLang === 'ro'
+          ? "<strong>Interzicerea contractelor Minijob:</strong> Menținerea politicii de 0 contracte Minijob active."
+          : "<strong>Restrict Minijobs:</strong> Maintain the current policy of 0 active Minijob contracts.");
+      }
+
+      if (hasTZ) {
+        actions.push(currentLang === 'ro'
+          ? "<strong>Restructurarea Teilzeit (TZ):</strong> Înghețarea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Gewerbe sau pe Werkstudent pe bicicletă."
+          : "<strong>Teilzeit (TZ) Restructuring:</strong> Freeze TZ hiring. Transition existing TZ car couriers to Gewerbe or Werkstudent on Bicycle.");
+      }
+
+      const isCongested = ['Frankfurt am Main', 'Munich', 'Berlin', 'Cologne', 'Dusseldorf', 'Stuttgart'].includes(cityData.salaries_name);
+      if (isCongested) {
+        actions.push(currentLang === 'ro'
+          ? `<strong>Tranziție masivă la Biciclete (congestie urbană):</strong> Deoarece ${currentCity} este extrem de aglomerat, viteza mașinilor este redusă iar timpul de parcare este mare. Se recomandă o flotă de <strong>80% biciclete electrice / 20% mașini</strong>.`
+          : `<strong>Bicycle Shift (Congested center):</strong> Since ${currentCity} suffers from heavy traffic and parking delays, e-bikes are faster. Target a ratio of <strong>80% e-bikes / 20% cars</strong>.`);
+      } else {
+        actions.push(currentLang === 'ro'
+          ? "<strong>Optimizare flotă:</strong> Menținerea mașinilor doar pe contracte Werkstudent sau Gewerbe și impunerea unei limite geografice."
+          : "<strong>Fleet optimization:</strong> Keep cars only for Werkstudent or Gewerbe contracts, and restrict car shifts to suburb deliveries.");
+      }
+
+      // Summer peak volume check
+      // We know from our forecast totals script:
+      let growthText = "";
+      if (currentCity === 'Berlin') growthText = "+61.7% (W1: 8.5k -> W5: 13.8k)";
+      else if (currentCity === 'München') growthText = "+61.7% (W1: 7.0k -> W5: 11.4k)";
+      else if (currentCity === 'Frankfurt') growthText = "+61.5% (W1: 5.3k -> W5: 8.5k)";
+      else if (currentCity === 'Leipzig') growthText = "+138.7% (W1: 870 -> W5: 2,077)";
+      else growthText = "+12% to +50%";
+
+      actions.push(currentLang === 'ro'
+        ? `<strong>Pregătire Vârf de Vară:</strong> Cererea crește cu <strong>${growthText}</strong> în săptămâna 5. Angajați exclusiv studenți pe contracte sezoniere (Kurzfristig, taxă ~3%) și Werkstudenten pe bicicletă.`
+        : `<strong>Summer Peak Preparation:</strong> Demand grows by <strong>${growthText}</strong> in week 5. Hire exclusively seasonal students (Kurzfristig, tax ~3%) and Werkstudenten on e-bikes.`);
+
+      actions.forEach(act => {
+        const item = document.createElement('div');
+        item.className = 'checklist-item';
+        item.innerHTML = `
+          <input type="checkbox" class="checklist-checkbox" checked>
+          <span class="checklist-text">${act}</span>
+        `;
+        costActionList.appendChild(item);
+      });
+    }
+
+    function renderHierarchyTable() {
+      costHierarchyBody.innerHTML = '';
+      const t = TRANSLATIONS[currentLang];
+      
+      const hierarchy = [
+        { poz: 1, contract: "B2B / Gewerbe", vehicle: "Bicycle", tax: "0.00%", cost: "15.50 - 16.50", badge: t.badgeOptimal, color: 'green' },
+        { poz: 2, contract: "Seasonal Student (Kurzfristig)", vehicle: "Bicycle", tax: "3.00%", cost: "16.50 - 17.50", badge: t.badgeOptimal, color: 'green' },
+        { poz: 3, contract: "B2B / Gewerbe", vehicle: "Car", tax: "0.00%", cost: "18.00 - 19.50", badge: t.badgeOptimal, color: 'green' },
+        { poz: 4, contract: "Seasonal Student (Kurzfristig)", vehicle: "Car", tax: "3.00%", cost: "19.00 - 20.50", badge: t.badgeOptimal, color: 'green' },
+        { poz: 5, contract: "Werkstudent", vehicle: "Bicycle", tax: "31.89%", cost: "21.00 - 22.00", badge: t.badgeSubLimit, color: 'green' },
+        { poz: 6, contract: "Werkstudent", vehicle: "Car", tax: "31.89%", cost: "23.00 - 25.00", badge: t.badgeNeconform, color: 'orange' },
+        { poz: 7, contract: "Teilzeit / TZ", vehicle: "Bicycle", tax: "43.09%", cost: "23.50 - 24.50", badge: t.badgeNeconform, color: 'orange' },
+        { poz: 8, contract: "Teilzeit / TZ", vehicle: "Car", tax: "43.09%", cost: "26.50 - 28.00", badge: t.badgeNeconform, color: 'orange' },
+        { poz: 9, contract: "Minijob", vehicle: "Bicycle", tax: "52.39%", cost: "24.50 - 25.50", badge: t.badgeEliminate, color: 'red' },
+        { poz: 10, contract: "Minijob", vehicle: "Car", tax: "52.39%", cost: "27.50 - 29.50", badge: t.badgeEliminate, color: 'red' }
+      ];
+
+      hierarchy.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${item.poz}</strong></td>
+          <td>${item.contract}</td>
+          <td>${item.vehicle}</td>
+          <td style="font-family: var(--font-mono);">${item.tax}</td>
+          <td style="font-family: var(--font-mono); font-weight: 500;">${item.cost} EUR/h</td>
+          <td><span class="status-badge ${item.color}">${item.badge}</span></td>
+        `;
+        costHierarchyBody.appendChild(tr);
+      });
     }
 
     // Initialize
