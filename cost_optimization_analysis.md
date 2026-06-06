@@ -99,6 +99,50 @@ Pentru a reduce costurile și a asigura respectarea pragului de 22.50 EUR/oră, 
 
 ---
 
+## 3.1 Structura Curentă a Flotei (Mai 2026) și Planul Cantitativ de Restructurare
+
+Pentru a înțelege exact impactul financiar și amploarea reorganizării necesare, am extras din rapoartele săptămânale de activitate și salarii din Mai 2026 numărul exact de **șoferi unici activi** (identificați după numărul personal de identificare - PN și nume), clasificați după tipul de contract și vehicul utilizat:
+
+### Distribuția Actuală a Contractelor active în Mai 2026:
+
+| Tip Contract | Vehicul | Număr Șoferi Activi | Proporție Flotă | Status Cost/Oră | Decizie Operațională |
+| :--- | :--- | :---: | :---: | :--- | :--- |
+| **Teilzeit (TZ)** | Bicicletă | **564** | 43.0% | *Neconform* (~23.50 EUR/h) | **Tranziție / Eliminare** |
+| **Teilzeit (TZ)** | Mașină | **349** | 26.6% | *Neconform* (~26.50 EUR/h) | **Eliminare completă** |
+| **Minijob** | Bicicletă | **173** | 13.2% | *Neconform* (~25.00 EUR/h) | **Eliminare completă** |
+| **Minijob** | Mașină | **141** | 10.7% | *Neconform* (~27.50 EUR/h) | **Eliminare completă** |
+| **Werkstudent** | Bicicletă | **55** | 4.2% | **Conform** (~21.50 EUR/h) | **Menținere și Scalare** |
+| **Werkstudent** | Mașină | **25** | 1.9% | *Neconform* (~24.00 EUR/h) | **Tranziție la Bicicletă / Plan B** |
+| **Unknown** | Bicicletă | **5** | 0.4% | *Neconform* | **Corectare Taxe / Eliminare** |
+| **Total Flotă** | | **1,312** | **100%** | **Medie: 25.50 - 28.50 EUR/h**| **Restructurare Urgentă** |
+
+> [!WARNING]
+> **Concluzie critică**: **93.8% din flotă** (1,232 de contracte din 1,312 active) se află sub contracte neconforme (Teilzeit sau Minijob). Acesta este motivul principal al pierderilor noastre structurale. Orice cursă efectuată sub aceste contracte ne costă peste 22.50 EUR/oră, indiferent de performanță.
+
+---
+
+### Planul de Restructurare pe Cifre Clare:
+
+Pentru a asigura respectarea limitei de **22.50 EUR/oră**, trebuie luate următoarele măsuri cantitative urgente:
+
+1. **ELIMINARE / TRANZIȚIE COMPLETĂ (1,227 contracte - 93.5%):**
+   - **Minijob (314 contracte: 173 Bicicletă, 141 Mașină)**: Trebuie eliminate 100% din flotă. Taxa de 52.39% le face imposibil de optimizat.
+   - **Teilzeit (913 contracte: 564 Bicicletă, 349 Mașină)**: Trebuie stopată orice angajare nouă. Șoferii existenți trebuie convertiți în Werkstudenten (dacă sunt studenți) sau Sezonieri (Kurzfristig), sau se vor reduce orele/rezilia contractele.
+   - **Unknown (5 contracte)**: Trebuie clarificată clasificarea lor de taxe; dacă nu sunt Werkstudent/Sezonier, se elimină.
+
+2. **TRANZIȚIE / CAPARE DECONTARE (25 contracte - 1.9%):**
+   - **Werkstudent + Mașină (25 contracte)**: Deși au o taxă acceptabilă (31.89%), viteza medie auto (KPH) crește decontul de kilometri peste limita admisă. Acești 25 de șoferi trebuie mutați pe biciclete sau supuși decontării capate (**Planul B de căpuire**).
+
+3. **MENȚINERE ȘI RECRUTARE AGRESIVĂ (55 contracte + recrutări noi):**
+   - **Werkstudent + Bicicletă (55 contracte)**: Singurul model de contract standard actual conform. Acești 55 de șoferi sunt păstrați și se recomandă recrutarea a încă **150 - 200 de studenți** sub acest profil.
+   - **Sezonieri / Kurzfristig (0 active în prezent)**: Trebuie inițiată o campanie masivă de angajare pentru studenți pe perioada verii (3 luni) pe bicicletă (cost brut orar optimizat de ~16.85 EUR/oră, taxă 3%) și mașină (cost brut orar de ~18.91 EUR/oră), pentru a compensa plecarea celor 1,227 de contracte neconforme și a acoperi vârful de cerere de peste 60% prognozat pentru vară.
+
+---
+
+
+
+---
+
 ## 4. Analiza specifică pe orașe și Planuri de acțiune
 
 Prezentăm mai jos situația actuală din fiecare oraș (ordonată descrescător după costul orar actual) și pașii clari pentru a ajunge la costul orar maxim de 22.50 EUR.
