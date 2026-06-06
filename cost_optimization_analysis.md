@@ -1089,10 +1089,12 @@ Pentru a preveni pierderile cauzate de șoferii cu TPH scăzut (care fac 11-12h 
 
 | Prag Umsatz Săptămânal | Commission % (Luată de noi) | Commission % (Rămasă la Driver) | Explicație Financiară | Impact Asupra Șoferului |
 | :--- | :--- | :--- | :--- | :--- |
-| **< 400 EUR** | **8.0%** | 92.0% | Șoferi cu productivitate slabă / Minijobs sporadici. Acoperă doar costurile minime. | Povară mică, nu descurajează începătorii. |
-| **400 - 800 EUR** | **10.0%** | 90.0% | Productivitate medie (~10-20h/săptămână). Începe să compenseze riscul de kilometri. | Acceptabil, crește implicarea șoferului. |
-| **800 - 1200 EUR** | **12.0%** | 88.0% | Productivitate ridicată (~20-35h). Acoperă complet riscurile operaționale. | Echitabil, corelat cu volumul mare de livrări. |
-| **> 1200 EUR** | **15.0%** | 85.0% | Șoferi profesioniști / Full-time (ture lungi). Protejează compania împotriva costurilor de rulaj mare. | Rezonabil, șoferul câștigă oricum o sumă netă mare. |
+| **< 500 EUR** | **8.0%** | 92.0% | Șoferi cu productivitate slabă / Minijobs sporadici. Acoperă doar costurile de bază. | Povară mică, nu descurajează începătorii. |
+| **500 - 1500 EUR** | **10.0%** | 90.0% | Productivitate medie / standard. Începe să amortizeze riscurile operaționale. | Rezonabil, crește implicarea șoferilor activi. |
+| **1500 - 3000 EUR** | **12.0%** | 88.0% | Productivitate mare / Ore suplimentare. Acoperă complet riscurile de kilometri mari. | Echitabil pentru șoferii cu volum mare de livrări. |
+| **3000 - 5000 EUR** | **14.0%** | 86.0% | Șoferi full-time performanți. Protejează compania împotriva costurilor de rulaj mare. | Corect, corelat cu veniturile mari încasate de curier. |
+| **5000 - 8000 EUR** | **15.0%** | 85.0% | Volum extrem (e.g. echipe/ture duble). Asigură rentabilitatea deplină. | Marginal, aplicat doar la praguri superioare de venit. |
+| **> 8000 EUR** | **16.0%** | 84.0% | Volum maxim excepțional. Marjă de siguranță optimă pentru companie. | Nesemnificativ ca impact direct la nivel individual. |
 
 
 ### Analiza impactului pe date reale (Mai):

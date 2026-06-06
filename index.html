@@ -1037,20 +1037,28 @@
           
           <div id="progressive-inputs-container" style="margin-top: 8px; display: none;">
             <div class="sim-input-row">
-              <span id="lbl-prog-t1">Umsatz &lt; 400 EUR</span>
+              <span id="lbl-prog-t1">Umsatz &lt; 500 EUR</span>
               <input type="number" id="input-prog-t1" value="8.0" step="0.5" min="0.0" max="100.0" oninput="runCostSimulation()">
             </div>
             <div class="sim-input-row">
-              <span id="lbl-prog-t2">Umsatz 400-800 EUR</span>
+              <span id="lbl-prog-t2">Umsatz 500-1500 EUR</span>
               <input type="number" id="input-prog-t2" value="10.0" step="0.5" min="0.0" max="100.0" oninput="runCostSimulation()">
             </div>
             <div class="sim-input-row">
-              <span id="lbl-prog-t3">Umsatz 800-1200 EUR</span>
+              <span id="lbl-prog-t3">Umsatz 1500-3000 EUR</span>
               <input type="number" id="input-prog-t3" value="12.0" step="0.5" min="0.0" max="100.0" oninput="runCostSimulation()">
             </div>
             <div class="sim-input-row">
-              <span id="lbl-prog-t4">Umsatz &gt; 1200 EUR</span>
-              <input type="number" id="input-prog-t4" value="15.0" step="0.5" min="0.0" max="100.0" oninput="runCostSimulation()">
+              <span id="lbl-prog-t4">Umsatz 3000-5000 EUR</span>
+              <input type="number" id="input-prog-t4" value="14.0" step="0.5" min="0.0" max="100.0" oninput="runCostSimulation()">
+            </div>
+            <div class="sim-input-row">
+              <span id="lbl-prog-t5">Umsatz 5000-8000 EUR</span>
+              <input type="number" id="input-prog-t5" value="15.0" step="0.5" min="0.0" max="100.0" oninput="runCostSimulation()">
+            </div>
+            <div class="sim-input-row">
+              <span id="lbl-prog-t6">Umsatz &gt; 8000 EUR</span>
+              <input type="number" id="input-prog-t6" value="16.0" step="0.5" min="0.0" max="100.0" oninput="runCostSimulation()">
             </div>
           </div>
         </div>
@@ -25154,10 +25162,12 @@
 
         // Manual inputs
         lblFlatShare: "Flat Share %",
-        lblProgT1: "Umsatz < 400 EUR",
-        lblProgT2: "Umsatz 400-800 EUR",
-        lblProgT3: "Umsatz 800-1200 EUR",
-        lblProgT4: "Umsatz > 1200 EUR",
+        lblProgT1: "Umsatz < 500 EUR",
+        lblProgT2: "Umsatz 500-1500 EUR",
+        lblProgT3: "Umsatz 1500-3000 EUR",
+        lblProgT4: "Umsatz 3000-5000 EUR",
+        lblProgT5: "Umsatz 5000-8000 EUR",
+        lblProgT6: "Umsatz > 8000 EUR",
 
         // Policy explanations
         expPolicyStandard: "We pay 100% of recorded mileage compensation to all drivers, regardless of individual trip profitability.",
@@ -25308,10 +25318,12 @@
 
         // Manual inputs
         lblFlatShare: "Marjă Fixă %",
-        lblProgT1: "Umsatz < 400 EUR",
-        lblProgT2: "Umsatz 400-800 EUR",
-        lblProgT3: "Umsatz 800-1200 EUR",
-        lblProgT4: "Umsatz > 1200 EUR",
+        lblProgT1: "Umsatz < 500 EUR",
+        lblProgT2: "Umsatz 500-1500 EUR",
+        lblProgT3: "Umsatz 1500-3000 EUR",
+        lblProgT4: "Umsatz 3000-5000 EUR",
+        lblProgT5: "Umsatz 5000-8000 EUR",
+        lblProgT6: "Umsatz > 8000 EUR",
 
         // Policy explanations
         expPolicyStandard: "Se plătește 100% din compensația pentru kilometri înregistrați pentru toți șoferii, indiferent de profitabilitate.",
@@ -25515,6 +25527,8 @@
       document.getElementById('lbl-prog-t2').textContent = t.lblProgT2;
       document.getElementById('lbl-prog-t3').textContent = t.lblProgT3;
       document.getElementById('lbl-prog-t4').textContent = t.lblProgT4;
+      document.getElementById('lbl-prog-t5').textContent = t.lblProgT5;
+      document.getElementById('lbl-prog-t6').textContent = t.lblProgT6;
     }
 
     function initDashboard() {
@@ -26101,7 +26115,9 @@
       const progT1 = parseFloat(document.getElementById('input-prog-t1').value) || 8.0;
       const progT2 = parseFloat(document.getElementById('input-prog-t2').value) || 10.0;
       const progT3 = parseFloat(document.getElementById('input-prog-t3').value) || 12.0;
-      const progT4 = parseFloat(document.getElementById('input-prog-t4').value) || 15.0;
+      const progT4 = parseFloat(document.getElementById('input-prog-t4').value) || 14.0;
+      const progT5 = parseFloat(document.getElementById('input-prog-t5').value) || 15.0;
+      const progT6 = parseFloat(document.getElementById('input-prog-t6').value) || 16.0;
 
       let simulatedProfit = 0;
       let totalRevenue = 0;
@@ -26117,14 +26133,18 @@
         
         let rate = flatRate;
         if (commModel === 'tiered') {
-          if (fareVal < 400) {
+          if (fareVal < 500) {
             rate = progT1;
-          } else if (fareVal < 800) {
+          } else if (fareVal < 1500) {
             rate = progT2;
-          } else if (fareVal < 1200) {
+          } else if (fareVal < 3000) {
             rate = progT3;
-          } else {
+          } else if (fareVal < 5000) {
             rate = progT4;
+          } else if (fareVal < 8000) {
+            rate = progT5;
+          } else {
+            rate = progT6;
           }
         }
         
