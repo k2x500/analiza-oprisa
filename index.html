@@ -870,6 +870,7 @@
   <div class="tab-bar">
     <button class="tab-btn active" id="tab-forecast-btn" onclick="switchTab('forecast')">📊 Capacity & Forecasting</button>
     <button class="tab-btn" id="tab-cost-btn" onclick="switchTab('cost')">💸 Cost Structure & Restructuring</button>
+    <button class="tab-btn" id="tab-plans-btn" onclick="switchTab('plans')">📋 City Action Plans</button>
   </div>
 
   <!-- TAB 1: FORECAST & CAPACITY -->
@@ -1223,7 +1224,924 @@
     </div>
   </div>
 
+  <!-- TAB 3: CITY ACTION PLANS -->
+  <div class="tab-content" id="tab-plans-content">
+    <div class="cost-tab-layout">
+      <!-- Left Column: City Stats & Current Contract Mix -->
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 24px;">
+        <!-- Stats Card -->
+        <div class="metric-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+          <div class="checklist-title" id="plans-lbl-city-stats" style="margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--text-main); border-bottom: 2px solid var(--accent-color); padding-bottom: 8px;">📊 City Performance Stats (May 2026)</div>
+          <div class="metrics-grid" style="grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 0;">
+            <div style="background: rgba(0,0,0,0.02); padding: 12px; border-radius: 8px;">
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;" id="plans-lbl-active-hours">Total Active Hours</div>
+              <div id="plans-val-active-hours" style="font-size: 20px; font-weight: 700; color: var(--accent-color); margin-top: 4px;">0 h</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.02); padding: 12px; border-radius: 8px;">
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;" id="plans-lbl-hourly-cost">Avg Cost per Hour</div>
+              <div id="plans-val-hourly-cost" style="font-size: 20px; font-weight: 700; color: var(--accent-color); margin-top: 4px;">0.00 EUR/h</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.02); padding: 12px; border-radius: 8px;">
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;" id="plans-lbl-tph">Average Trips/Hr (TPH)</div>
+              <div id="plans-val-tph" style="font-size: 20px; font-weight: 700; color: var(--accent-color); margin-top: 4px;">0.00</div>
+            </div>
+            <div style="background: rgba(0,0,0,0.02); padding: 12px; border-radius: 8px;">
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 600;" id="plans-lbl-kph">Average Km/Hr (KPH)</div>
+              <div id="plans-val-kph" style="font-size: 20px; font-weight: 700; color: var(--accent-color); margin-top: 4px;">0.00 km/h</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contract Breakdown List -->
+        <div class="metric-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); flex: 1; display: flex; flex-direction: column;">
+          <div class="checklist-title" id="plans-lbl-mix-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--text-main); border-bottom: 2px solid var(--accent-color); padding-bottom: 8px;">🚗 Current Contract & Vehicle Structure</div>
+          <div id="plans-mix-list" style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
+            <!-- Filled dynamically in JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Checklist of Concrete Restructuring Steps ("What to do & How to fix it") -->
+      <div style="flex: 1.2; display: flex; flex-direction: column; gap: 24px;">
+        <div class="metric-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); height: 100%;">
+          <div class="checklist-title" id="plans-lbl-steps-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--text-main); border-bottom: 2px solid var(--accent-color); padding-bottom: 8px;">🛠️ Restructuring Action Plan ("What to do & How to fix it")</div>
+          <div style="margin-bottom: 16px; font-size: 13.5px; color: var(--text-muted); line-height: 1.5;" id="plans-lbl-steps-subtitle">
+            Follow the checklist below to optimize the fleet capacity, eliminate non-compliant contract models, and achieve the target hourly cost of ≤ 22.50 EUR/hour.
+          </div>
+          <div class="checklist-container" id="plans-steps-container" style="border: none; padding: 0; background: transparent; display: flex; flex-direction: column; gap: 16px;">
+            <!-- Filled dynamically in JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
+    const CITY_PLANS = {
+  "Augsburg": {
+    "hours": 5117.0,
+    "cost": 26.33,
+    "tph": 1.79,
+    "kph": 10.38,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Bicycle`: 116.0 h (2.3%) | Cost: 24.81 EUR/h | TPH: 1.98 | KPH: 5.87",
+        "en": "`Minijob` + `Bicycle`: 116.0 h (2.3%) | Cost: 24.81 EUR/h | TPH: 1.98 | KPH: 5.87"
+      },
+      {
+        "ro": "`Minijob` + `Car`: 418.0 h (8.2%) | Cost: 27.92 EUR/h | TPH: 1.82 | KPH: 10.21",
+        "en": "`Minijob` + `Car`: 418.0 h (8.2%) | Cost: 27.92 EUR/h | TPH: 1.82 | KPH: 10.21"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 162.0 h (3.2%) | Cost: 23.22 EUR/h | TPH: 1.25 | KPH: 5.64",
+        "en": "`TZ` + `Bicycle`: 162.0 h (3.2%) | Cost: 23.22 EUR/h | TPH: 1.25 | KPH: 5.64"
+      },
+      {
+        "ro": "`TZ` + `Car`: 4266.0 h (83.4%) | Cost: 26.50 EUR/h | TPH: 1.78 | KPH: 10.82",
+        "en": "`TZ` + `Car`: 4266.0 h (83.4%) | Cost: 26.50 EUR/h | TPH: 1.78 | KPH: 10.82"
+      },
+      {
+        "ro": "`Werkstundent` + `Bicycle`: 155.0 h (3.0%) | Cost: 21.80 EUR/h | TPH: 2.41 | KPH: 7.01",
+        "en": "`Werkstundent` + `Bicycle`: 155.0 h (3.0%) | Cost: 21.80 EUR/h | TPH: 2.41 | KPH: 7.01"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Berlin": {
+    "hours": 35650.99,
+    "cost": 25.52,
+    "tph": 2.02,
+    "kph": 9.72,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Bicycle`: 2159.0 h (6.1%) | Cost: 25.05 EUR/h | TPH: 2.02 | KPH: 6.61",
+        "en": "`Minijob` + `Bicycle`: 2159.0 h (6.1%) | Cost: 25.05 EUR/h | TPH: 2.02 | KPH: 6.61"
+      },
+      {
+        "ro": "`Minijob` + `Car`: 1710.0 h (4.8%) | Cost: 28.34 EUR/h | TPH: 1.95 | KPH: 11.07",
+        "en": "`Minijob` + `Car`: 1710.0 h (4.8%) | Cost: 28.34 EUR/h | TPH: 1.95 | KPH: 11.07"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 6852.0 h (19.2%) | Cost: 23.50 EUR/h | TPH: 1.93 | KPH: 6.53",
+        "en": "`TZ` + `Bicycle`: 6852.0 h (19.2%) | Cost: 23.50 EUR/h | TPH: 1.93 | KPH: 6.53"
+      },
+      {
+        "ro": "`TZ` + `Car`: 19912.0 h (55.9%) | Cost: 27.02 EUR/h | TPH: 2.04 | KPH: 11.94",
+        "en": "`TZ` + `Car`: 19912.0 h (55.9%) | Cost: 27.02 EUR/h | TPH: 2.04 | KPH: 11.94"
+      },
+      {
+        "ro": "`Werkstundent` + `Bicycle`: 5012.0 h (14.1%) | Cost: 21.55 EUR/h | TPH: 2.06 | KPH: 6.16",
+        "en": "`Werkstundent` + `Bicycle`: 5012.0 h (14.1%) | Cost: 21.55 EUR/h | TPH: 2.06 | KPH: 6.16"
+      },
+      {
+        "ro": "`Werkstundent` + `Car`: 6.0 h (0.0%) | Cost: 22.78 EUR/h | TPH: 1.17 | KPH: 6.98",
+        "en": "`Werkstundent` + `Car`: 6.0 h (0.0%) | Cost: 22.78 EUR/h | TPH: 1.17 | KPH: 6.98"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Tranziție către Biciclete (Congestie urbană)",
+        "desc_ro": "Deoarece Berlin are o congestie ridicată (Frankfurt/München au blocaje masive în centru), viteza mașinilor este redusă iar timpul de parcare este mare. BTPH (TPH pe bicicletă) este istoric mai mare sau egal cu cel auto în centru. Se recomandă înlocuirea mașinilor cu biciclete electrice în proporție de **80% biciclete / 20% mașini** pentru livrările ultra-centrale.",
+        "title_en": "Bicycle Shift (Congested Center)",
+        "desc_en": "Since the city suffers from heavy traffic and parking delays, e-bikes are faster. Target a ratio of 80% e-bikes / 20% cars."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Bielefeld": {
+    "hours": 5347.0,
+    "cost": 26.47,
+    "tph": 2.16,
+    "kph": 11.44,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Bicycle`: 93.0 h (1.7%) | Cost: 25.05 EUR/h | TPH: 2.04 | KPH: 6.62",
+        "en": "`Minijob` + `Bicycle`: 93.0 h (1.7%) | Cost: 25.05 EUR/h | TPH: 2.04 | KPH: 6.62"
+      },
+      {
+        "ro": "`Minijob` + `Car`: 193.0 h (3.6%) | Cost: 28.22 EUR/h | TPH: 2.04 | KPH: 10.81",
+        "en": "`Minijob` + `Car`: 193.0 h (3.6%) | Cost: 28.22 EUR/h | TPH: 2.04 | KPH: 10.81"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 997.0 h (18.6%) | Cost: 24.43 EUR/h | TPH: 2.13 | KPH: 9.53",
+        "en": "`TZ` + `Bicycle`: 997.0 h (18.6%) | Cost: 24.43 EUR/h | TPH: 2.13 | KPH: 9.53"
+      },
+      {
+        "ro": "`TZ` + `Car`: 3805.0 h (71.2%) | Cost: 27.14 EUR/h | TPH: 2.18 | KPH: 12.21",
+        "en": "`TZ` + `Car`: 3805.0 h (71.2%) | Cost: 27.14 EUR/h | TPH: 2.18 | KPH: 12.21"
+      },
+      {
+        "ro": "`Werkstundent` + `Bicycle`: 88.0 h (1.6%) | Cost: 21.26 EUR/h | TPH: 1.89 | KPH: 5.14",
+        "en": "`Werkstundent` + `Bicycle`: 88.0 h (1.6%) | Cost: 21.26 EUR/h | TPH: 1.89 | KPH: 5.14"
+      },
+      {
+        "ro": "`Werkstundent` + `Car`: 171.0 h (3.2%) | Cost: 24.88 EUR/h | TPH: 2.36 | KPH: 11.88",
+        "en": "`Werkstundent` + `Car`: 171.0 h (3.2%) | Cost: 24.88 EUR/h | TPH: 2.36 | KPH: 11.88"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Frankfurt": {
+    "hours": 24084.0,
+    "cost": 28.11,
+    "tph": 1.94,
+    "kph": 14.61,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Bicycle`: 169.0 h (0.7%) | Cost: 26.91 EUR/h | TPH: 2.07 | KPH: 12.24",
+        "en": "`Minijob` + `Bicycle`: 169.0 h (0.7%) | Cost: 26.91 EUR/h | TPH: 2.07 | KPH: 12.24"
+      },
+      {
+        "ro": "`Minijob` + `Car`: 1271.0 h (5.3%) | Cost: 29.48 EUR/h | TPH: 1.85 | KPH: 13.37",
+        "en": "`Minijob` + `Car`: 1271.0 h (5.3%) | Cost: 29.48 EUR/h | TPH: 1.85 | KPH: 13.37"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 2663.0 h (11.1%) | Cost: 25.79 EUR/h | TPH: 2.01 | KPH: 13.95",
+        "en": "`TZ` + `Bicycle`: 2663.0 h (11.1%) | Cost: 25.79 EUR/h | TPH: 2.01 | KPH: 13.95"
+      },
+      {
+        "ro": "`TZ` + `Car`: 19981.0 h (83.0%) | Cost: 28.34 EUR/h | TPH: 1.94 | KPH: 14.80",
+        "en": "`TZ` + `Car`: 19981.0 h (83.0%) | Cost: 28.34 EUR/h | TPH: 1.94 | KPH: 14.80"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Tranziție către Biciclete (Congestie urbană)",
+        "desc_ro": "Deoarece Frankfurt am Main are o congestie ridicată (Frankfurt/München au blocaje masive în centru), viteza mașinilor este redusă iar timpul de parcare este mare. BTPH (TPH pe bicicletă) este istoric mai mare sau egal cu cel auto în centru. Se recomandă înlocuirea mașinilor cu biciclete electrice în proporție de **80% biciclete / 20% mașini** pentru livrările ultra-centrale.",
+        "title_en": "Bicycle Shift (Congested Center)",
+        "desc_en": "Since the city suffers from heavy traffic and parking delays, e-bikes are faster. Target a ratio of 80% e-bikes / 20% cars."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Freiburg": {
+    "hours": 2447.0,
+    "cost": 27.2,
+    "tph": 2.11,
+    "kph": 11.74,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Car`: 546.0 h (22.3%) | Cost: 27.90 EUR/h | TPH: 2.20 | KPH: 10.18",
+        "en": "`Minijob` + `Car`: 546.0 h (22.3%) | Cost: 27.90 EUR/h | TPH: 2.20 | KPH: 10.18"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 218.0 h (8.9%) | Cost: 23.77 EUR/h | TPH: 1.99 | KPH: 7.41",
+        "en": "`TZ` + `Bicycle`: 218.0 h (8.9%) | Cost: 23.77 EUR/h | TPH: 1.99 | KPH: 7.41"
+      },
+      {
+        "ro": "`TZ` + `Car`: 1683.0 h (68.8%) | Cost: 27.42 EUR/h | TPH: 2.09 | KPH: 12.81",
+        "en": "`TZ` + `Car`: 1683.0 h (68.8%) | Cost: 27.42 EUR/h | TPH: 2.09 | KPH: 12.81"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Gütersloh": {
+    "hours": 128.0,
+    "cost": 26.58,
+    "tph": 1.58,
+    "kph": 7.52,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Car`: 127.0 h (99.2%) | Cost: 26.58 EUR/h | TPH: 1.58 | KPH: 7.51",
+        "en": "`Minijob` + `Car`: 127.0 h (99.2%) | Cost: 26.58 EUR/h | TPH: 1.58 | KPH: 7.51"
+      },
+      {
+        "ro": "`TZ` + `Car`: 1.0 h (0.8%) | Cost: 25.69 EUR/h | TPH: 1.00 | KPH: 9.09",
+        "en": "`TZ` + `Car`: 1.0 h (0.8%) | Cost: 25.69 EUR/h | TPH: 1.00 | KPH: 9.09"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Heidelberg": {
+    "hours": 4112.0,
+    "cost": 27.82,
+    "tph": 2.39,
+    "kph": 13.46,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Bicycle`: 1.0 h (0.0%) | Cost: 25.80 EUR/h | TPH: 1.00 | KPH: 8.88",
+        "en": "`Minijob` + `Bicycle`: 1.0 h (0.0%) | Cost: 25.80 EUR/h | TPH: 1.00 | KPH: 8.88"
+      },
+      {
+        "ro": "`Minijob` + `Car`: 216.0 h (5.3%) | Cost: 29.69 EUR/h | TPH: 2.52 | KPH: 13.81",
+        "en": "`Minijob` + `Car`: 216.0 h (5.3%) | Cost: 29.69 EUR/h | TPH: 2.52 | KPH: 13.81"
+      },
+      {
+        "ro": "`TZ` + `Car`: 3895.0 h (94.7%) | Cost: 27.71 EUR/h | TPH: 2.38 | KPH: 13.44",
+        "en": "`TZ` + `Car`: 3895.0 h (94.7%) | Cost: 27.71 EUR/h | TPH: 2.38 | KPH: 13.44"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Heilbronn": {
+    "hours": 2186.0,
+    "cost": 27.08,
+    "tph": 2.17,
+    "kph": 12.49,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Car`: 393.0 h (18.0%) | Cost: 29.07 EUR/h | TPH: 2.38 | KPH: 12.54",
+        "en": "`Minijob` + `Car`: 393.0 h (18.0%) | Cost: 29.07 EUR/h | TPH: 2.38 | KPH: 12.54"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 584.0 h (26.7%) | Cost: 25.30 EUR/h | TPH: 2.11 | KPH: 12.37",
+        "en": "`TZ` + `Bicycle`: 584.0 h (26.7%) | Cost: 25.30 EUR/h | TPH: 2.11 | KPH: 12.37"
+      },
+      {
+        "ro": "`TZ` + `Car`: 1209.0 h (55.3%) | Cost: 27.29 EUR/h | TPH: 2.13 | KPH: 12.52",
+        "en": "`TZ` + `Car`: 1209.0 h (55.3%) | Cost: 27.29 EUR/h | TPH: 2.13 | KPH: 12.52"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Ingolstadt": {
+    "hours": 2315.0,
+    "cost": 26.63,
+    "tph": 1.99,
+    "kph": 11.4,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Car`: 366.0 h (15.8%) | Cost: 28.70 EUR/h | TPH: 2.06 | KPH: 11.79",
+        "en": "`Minijob` + `Car`: 366.0 h (15.8%) | Cost: 28.70 EUR/h | TPH: 2.06 | KPH: 11.79"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 403.0 h (17.4%) | Cost: 25.35 EUR/h | TPH: 2.16 | KPH: 12.51",
+        "en": "`TZ` + `Bicycle`: 403.0 h (17.4%) | Cost: 25.35 EUR/h | TPH: 2.16 | KPH: 12.51"
+      },
+      {
+        "ro": "`TZ` + `Car`: 1477.0 h (63.8%) | Cost: 26.72 EUR/h | TPH: 1.95 | KPH: 11.30",
+        "en": "`TZ` + `Car`: 1477.0 h (63.8%) | Cost: 26.72 EUR/h | TPH: 1.95 | KPH: 11.30"
+      },
+      {
+        "ro": "`Werkstundent` + `Bicycle`: 69.0 h (3.0%) | Cost: 21.23 EUR/h | TPH: 1.46 | KPH: 5.01",
+        "en": "`Werkstundent` + `Bicycle`: 69.0 h (3.0%) | Cost: 21.23 EUR/h | TPH: 1.46 | KPH: 5.01"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Karlsruhe": {
+    "hours": 2928.0,
+    "cost": 27.82,
+    "tph": 2.36,
+    "kph": 13.06,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Bicycle`: 69.0 h (2.4%) | Cost: 25.46 EUR/h | TPH: 2.45 | KPH: 7.84",
+        "en": "`Minijob` + `Bicycle`: 69.0 h (2.4%) | Cost: 25.46 EUR/h | TPH: 2.45 | KPH: 7.84"
+      },
+      {
+        "ro": "`Minijob` + `Car`: 526.0 h (18.0%) | Cost: 28.14 EUR/h | TPH: 2.25 | KPH: 10.67",
+        "en": "`Minijob` + `Car`: 526.0 h (18.0%) | Cost: 28.14 EUR/h | TPH: 2.25 | KPH: 10.67"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 75.0 h (2.6%) | Cost: 24.08 EUR/h | TPH: 2.56 | KPH: 8.42",
+        "en": "`TZ` + `Bicycle`: 75.0 h (2.6%) | Cost: 24.08 EUR/h | TPH: 2.56 | KPH: 8.42"
+      },
+      {
+        "ro": "`TZ` + `Car`: 2258.0 h (77.1%) | Cost: 27.94 EUR/h | TPH: 2.37 | KPH: 13.93",
+        "en": "`TZ` + `Car`: 2258.0 h (77.1%) | Cost: 27.94 EUR/h | TPH: 2.37 | KPH: 13.93"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Leipzig": {
+    "hours": 3001.0,
+    "cost": 24.33,
+    "tph": 1.48,
+    "kph": 6.3,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Car`: 79.0 h (2.6%) | Cost: 26.26 EUR/h | TPH: 1.47 | KPH: 6.84",
+        "en": "`Minijob` + `Car`: 79.0 h (2.6%) | Cost: 26.26 EUR/h | TPH: 1.47 | KPH: 6.84"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 189.0 h (6.3%) | Cost: 22.64 EUR/h | TPH: 1.57 | KPH: 3.74",
+        "en": "`TZ` + `Bicycle`: 189.0 h (6.3%) | Cost: 22.64 EUR/h | TPH: 1.57 | KPH: 3.74"
+      },
+      {
+        "ro": "`TZ` + `Car`: 2635.0 h (87.8%) | Cost: 24.53 EUR/h | TPH: 1.48 | KPH: 6.58",
+        "en": "`TZ` + `Car`: 2635.0 h (87.8%) | Cost: 24.53 EUR/h | TPH: 1.48 | KPH: 6.58"
+      },
+      {
+        "ro": "`Werkstundent` + `Bicycle`: 98.0 h (3.3%) | Cost: 20.77 EUR/h | TPH: 1.47 | KPH: 3.42",
+        "en": "`Werkstundent` + `Bicycle`: 98.0 h (3.3%) | Cost: 20.77 EUR/h | TPH: 1.47 | KPH: 3.42"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "München": {
+    "hours": 28586.0,
+    "cost": 28.29,
+    "tph": 2.12,
+    "kph": 15.03,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Bicycle`: 433.0 h (1.5%) | Cost: 25.46 EUR/h | TPH: 2.27 | KPH: 7.85",
+        "en": "`Minijob` + `Bicycle`: 433.0 h (1.5%) | Cost: 25.46 EUR/h | TPH: 2.27 | KPH: 7.85"
+      },
+      {
+        "ro": "`Minijob` + `Car`: 1757.0 h (6.1%) | Cost: 30.03 EUR/h | TPH: 2.14 | KPH: 14.48",
+        "en": "`Minijob` + `Car`: 1757.0 h (6.1%) | Cost: 30.03 EUR/h | TPH: 2.14 | KPH: 14.48"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 3124.0 h (10.9%) | Cost: 25.72 EUR/h | TPH: 2.06 | KPH: 13.70",
+        "en": "`TZ` + `Bicycle`: 3124.0 h (10.9%) | Cost: 25.72 EUR/h | TPH: 2.06 | KPH: 13.70"
+      },
+      {
+        "ro": "`TZ` + `Car`: 22886.0 h (80.1%) | Cost: 28.67 EUR/h | TPH: 2.12 | KPH: 15.50",
+        "en": "`TZ` + `Car`: 22886.0 h (80.1%) | Cost: 28.67 EUR/h | TPH: 2.12 | KPH: 15.50"
+      },
+      {
+        "ro": "`Werkstundent` + `Bicycle`: 358.0 h (1.3%) | Cost: 22.19 EUR/h | TPH: 2.08 | KPH: 8.40",
+        "en": "`Werkstundent` + `Bicycle`: 358.0 h (1.3%) | Cost: 22.19 EUR/h | TPH: 2.08 | KPH: 8.40"
+      },
+      {
+        "ro": "`Werkstundent` + `Car`: 28.0 h (0.1%) | Cost: 25.45 EUR/h | TPH: 1.75 | KPH: 13.23",
+        "en": "`Werkstundent` + `Car`: 28.0 h (0.1%) | Cost: 25.45 EUR/h | TPH: 1.75 | KPH: 13.23"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Tranziție către Biciclete (Congestie urbană)",
+        "desc_ro": "Deoarece Munich are o congestie ridicată (Frankfurt/München au blocaje masive în centru), viteza mașinilor este redusă iar timpul de parcare este mare. BTPH (TPH pe bicicletă) este istoric mai mare sau egal cu cel auto în centru. Se recomandă înlocuirea mașinilor cu biciclete electrice în proporție de **80% biciclete / 20% mașini** pentru livrările ultra-centrale.",
+        "title_en": "Bicycle Shift (Congested Center)",
+        "desc_en": "Since the city suffers from heavy traffic and parking delays, e-bikes are faster. Target a ratio of 80% e-bikes / 20% cars."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Nürnberg": {
+    "hours": 4102.0,
+    "cost": 25.84,
+    "tph": 1.81,
+    "kph": 10.01,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Bicycle`: 193.0 h (4.7%) | Cost: 24.53 EUR/h | TPH: 2.11 | KPH: 5.04",
+        "en": "`Minijob` + `Bicycle`: 193.0 h (4.7%) | Cost: 24.53 EUR/h | TPH: 2.11 | KPH: 5.04"
+      },
+      {
+        "ro": "`Minijob` + `Car`: 705.0 h (17.2%) | Cost: 28.24 EUR/h | TPH: 1.72 | KPH: 10.86",
+        "en": "`Minijob` + `Car`: 705.0 h (17.2%) | Cost: 28.24 EUR/h | TPH: 1.72 | KPH: 10.86"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 562.0 h (13.7%) | Cost: 24.45 EUR/h | TPH: 1.80 | KPH: 9.62",
+        "en": "`TZ` + `Bicycle`: 562.0 h (13.7%) | Cost: 24.45 EUR/h | TPH: 1.80 | KPH: 9.62"
+      },
+      {
+        "ro": "`TZ` + `Car`: 2041.0 h (49.8%) | Cost: 26.79 EUR/h | TPH: 1.75 | KPH: 11.44",
+        "en": "`TZ` + `Car`: 2041.0 h (49.8%) | Cost: 26.79 EUR/h | TPH: 1.75 | KPH: 11.44"
+      },
+      {
+        "ro": "`Werkstundent` + `Bicycle`: 593.0 h (14.5%) | Cost: 21.54 EUR/h | TPH: 2.07 | KPH: 6.12",
+        "en": "`Werkstundent` + `Bicycle`: 593.0 h (14.5%) | Cost: 21.54 EUR/h | TPH: 2.07 | KPH: 6.12"
+      },
+      {
+        "ro": "`Werkstundent` + `Car`: 8.0 h (0.2%) | Cost: 21.79 EUR/h | TPH: 1.25 | KPH: 4.65",
+        "en": "`Werkstundent` + `Car`: 8.0 h (0.2%) | Cost: 21.79 EUR/h | TPH: 1.25 | KPH: 4.65"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Potsdam": {
+    "hours": 3248.0,
+    "cost": 25.41,
+    "tph": 1.89,
+    "kph": 9.82,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Bicycle`: 89.0 h (2.7%) | Cost: 25.56 EUR/h | TPH: 1.63 | KPH: 8.15",
+        "en": "`Minijob` + `Bicycle`: 89.0 h (2.7%) | Cost: 25.56 EUR/h | TPH: 1.63 | KPH: 8.15"
+      },
+      {
+        "ro": "`Minijob` + `Car`: 328.0 h (10.1%) | Cost: 29.23 EUR/h | TPH: 2.18 | KPH: 12.87",
+        "en": "`Minijob` + `Car`: 328.0 h (10.1%) | Cost: 29.23 EUR/h | TPH: 2.18 | KPH: 12.87"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 484.0 h (14.9%) | Cost: 23.48 EUR/h | TPH: 1.83 | KPH: 6.47",
+        "en": "`TZ` + `Bicycle`: 484.0 h (14.9%) | Cost: 23.48 EUR/h | TPH: 1.83 | KPH: 6.47"
+      },
+      {
+        "ro": "`TZ` + `Car`: 1646.0 h (50.7%) | Cost: 26.65 EUR/h | TPH: 1.86 | KPH: 11.15",
+        "en": "`TZ` + `Car`: 1646.0 h (50.7%) | Cost: 26.65 EUR/h | TPH: 1.86 | KPH: 11.15"
+      },
+      {
+        "ro": "`Werkstundent` + `Bicycle`: 701.0 h (21.6%) | Cost: 22.03 EUR/h | TPH: 1.91 | KPH: 7.82",
+        "en": "`Werkstundent` + `Bicycle`: 701.0 h (21.6%) | Cost: 22.03 EUR/h | TPH: 1.91 | KPH: 7.82"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Regensburg": {
+    "hours": 619.0,
+    "cost": 26.96,
+    "tph": 2.07,
+    "kph": 10.75,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Car`: 173.0 h (27.9%) | Cost: 28.79 EUR/h | TPH: 2.29 | KPH: 11.98",
+        "en": "`Minijob` + `Car`: 173.0 h (27.9%) | Cost: 28.79 EUR/h | TPH: 2.29 | KPH: 11.98"
+      },
+      {
+        "ro": "`TZ` + `Car`: 446.0 h (72.1%) | Cost: 26.25 EUR/h | TPH: 1.98 | KPH: 10.28",
+        "en": "`TZ` + `Car`: 446.0 h (72.1%) | Cost: 26.25 EUR/h | TPH: 1.98 | KPH: 10.28"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Ulm": {
+    "hours": 2122.0,
+    "cost": 26.34,
+    "tph": 1.94,
+    "kph": 10.2,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Bicycle`: 101.0 h (4.8%) | Cost: 25.06 EUR/h | TPH: 2.10 | KPH: 6.63",
+        "en": "`Minijob` + `Bicycle`: 101.0 h (4.8%) | Cost: 25.06 EUR/h | TPH: 2.10 | KPH: 6.63"
+      },
+      {
+        "ro": "`Minijob` + `Car`: 275.0 h (13.0%) | Cost: 27.45 EUR/h | TPH: 1.79 | KPH: 9.27",
+        "en": "`Minijob` + `Car`: 275.0 h (13.0%) | Cost: 27.45 EUR/h | TPH: 1.79 | KPH: 9.27"
+      },
+      {
+        "ro": "`TZ` + `Bicycle`: 147.0 h (6.9%) | Cost: 24.60 EUR/h | TPH: 1.32 | KPH: 10.10",
+        "en": "`TZ` + `Bicycle`: 147.0 h (6.9%) | Cost: 24.60 EUR/h | TPH: 1.32 | KPH: 10.10"
+      },
+      {
+        "ro": "`TZ` + `Car`: 1599.0 h (75.4%) | Cost: 26.39 EUR/h | TPH: 2.02 | KPH: 10.59",
+        "en": "`TZ` + `Car`: 1599.0 h (75.4%) | Cost: 26.39 EUR/h | TPH: 2.02 | KPH: 10.59"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  },
+  "Worms": {
+    "hours": 879.0,
+    "cost": 25.77,
+    "tph": 1.74,
+    "kph": 7.74,
+    "structure": [
+      {
+        "ro": "`Minijob` + `Bicycle`: 62.0 h (7.1%) | Cost: 24.55 EUR/h | TPH: 1.66 | KPH: 5.09",
+        "en": "`Minijob` + `Bicycle`: 62.0 h (7.1%) | Cost: 24.55 EUR/h | TPH: 1.66 | KPH: 5.09"
+      },
+      {
+        "ro": "`Minijob` + `Car`: 444.0 h (50.5%) | Cost: 27.01 EUR/h | TPH: 1.78 | KPH: 8.36",
+        "en": "`Minijob` + `Car`: 444.0 h (50.5%) | Cost: 27.01 EUR/h | TPH: 1.78 | KPH: 8.36"
+      },
+      {
+        "ro": "`TZ` + `Car`: 318.0 h (36.2%) | Cost: 24.98 EUR/h | TPH: 1.72 | KPH: 7.55",
+        "en": "`TZ` + `Car`: 318.0 h (36.2%) | Cost: 24.98 EUR/h | TPH: 1.72 | KPH: 7.55"
+      },
+      {
+        "ro": "`Werkstundent` + `Bicycle`: 55.0 h (6.3%) | Cost: 21.74 EUR/h | TPH: 1.55 | KPH: 6.83",
+        "en": "`Werkstundent` + `Bicycle`: 55.0 h (6.3%) | Cost: 21.74 EUR/h | TPH: 1.55 | KPH: 6.83"
+      }
+    ],
+    "steps": [
+      {
+        "title_ro": "Eliminarea Minijobs",
+        "desc_ro": "Concedierea sau conversia tuturor angajaților cu Minijob (care costă > 25 EUR/h) către Werkstudent pe bicicletă.",
+        "title_en": "Eliminate Minijobs",
+        "desc_en": "Fire or convert all Minijob couriers (costing > 25 EUR/h) to Werkstudent on Bicycle."
+      },
+      {
+        "title_ro": "Restructurarea Teilzeit (TZ)",
+        "desc_ro": "Stoparea recrutării TZ. Angajații TZ existenți pe mașină trebuie transferați pe Werkstudent pe bicicletă sau supuși politicii de căpuire a kilometrilor (Plan B).",
+        "title_en": "Teilzeit (TZ) Restructuring",
+        "desc_en": "Freeze TZ hiring. Transition existing TZ car couriers to Werkstudent on Bicycle or apply strict mileage capping (Plan B)."
+      },
+      {
+        "title_ro": "Optimizarea Flotei Auto/Bicicletă",
+        "desc_ro": "Menținerea mașinilor doar sub contracte Werkstudent cu aplicarea strictă a limitei de kilometri (Plan B) și limitarea geografică a curselor.",
+        "title_en": "Fleet Optimization",
+        "desc_en": "Keep cars only for Werkstudent contracts with strict mileage capping (Plan B) and limit shift zones."
+      },
+      {
+        "title_ro": "Recrutare pentru Vârful de Vară",
+        "desc_ro": "Suplinirea deficitului de capacitate din iunie prin angajarea de Werkstudenten permanent și studenți pe contract sezonier (Kurzfristig) pe bicicletă, asigurând costuri orare de ~17.00 - 21.00 EUR.",
+        "title_en": "Summer Peak Recruitment",
+        "desc_en": "Cover the June capacity deficit by hiring permanent Werkstudenten and seasonal students (Kurzfristig) on e-bikes, targeting hourly costs of ~17.00 - 21.00 EUR."
+      }
+    ]
+  }
+};
+
     // State Management
     let appData = null;
     let currentCity = 'Berlin';
@@ -58659,6 +59577,15 @@ const COST_DB = {
         // Tab selectors
         tabForecast: "📊 Capacity & Forecasting",
         tabCost: "💸 Cost Structure & Restructuring",
+        tabPlans: "📋 City Action Plans",
+        plansLblCityStats: "📊 City Performance Stats (May 2026)",
+        plansLblActiveHours: "Total Active Hours",
+        plansLblHourlyCost: "Avg Cost per Hour",
+        plansLblTph: "Average Trips/Hr (TPH)",
+        plansLblKph: "Average Km/Hr (KPH)",
+        plansLblMixTitle: "🚗 Current Contract & Vehicle Structure",
+        plansLblStepsTitle: "🛠️ Restructuring Action Plan (\"What to do & How to fix it\")",
+        plansLblStepsSubtitle: "Follow the checklist below to optimize the fleet capacity, eliminate non-compliant contract models, and achieve the target hourly cost of ≤ 22.50 EUR/hour.",
         
         // Warning banner
         warningBanner: "⚠️ June Forecast not uploaded for {city}. Dashboard displays simulated forecast by scaling Berlin's profile (factor: {factor}%).",
@@ -58836,6 +59763,15 @@ const COST_DB = {
         // Tab selectors
         tabForecast: "📊 Capacitate & Prognoză",
         tabCost: "💸 Structură Costuri & Restructurare",
+        tabPlans: "📋 Planuri pe Orașe",
+        plansLblCityStats: "📊 Statistici Performanță Oraș (Mai 2026)",
+        plansLblActiveHours: "Total Ore Active",
+        plansLblHourlyCost: "Cost Mediu per Oră",
+        plansLblTph: "TPH Mediu (Livrări/h)",
+        plansLblKph: "KPH Mediu (Km/h)",
+        plansLblMixTitle: "🚗 Structura Actuală a Contractelor și Vehiculelor",
+        plansLblStepsTitle: "🛠️ Plan de Acțiune Restructurare (Ce trebuie făcut & Rezolvare)",
+        plansLblStepsSubtitle: "Urmați lista de verificare de mai jos pentru a optimiza capacitatea flotei, a elimina modelele de contract neconforme și a atinge costul orar țintă de ≤ 22.50 EUR/oră.",
         
         // Warning banner
         warningBanner: "⚠️ Prognoza pentru Iunie nu a fost încărcată pentru {city}. Tabloul de bord afișează prognoza simulată prin scalarea profilului Berlinului (factor: {factor}%).",
@@ -59088,12 +60024,18 @@ const COST_DB = {
       activeTab = tab;
       document.getElementById('tab-forecast-btn').classList.toggle('active', tab === 'forecast');
       document.getElementById('tab-cost-btn').classList.toggle('active', tab === 'cost');
+      const tabPlansBtn = document.getElementById('tab-plans-btn');
+      if (tabPlansBtn) tabPlansBtn.classList.toggle('active', tab === 'plans');
       
       document.getElementById('tab-forecast-content').classList.toggle('active', tab === 'forecast');
       document.getElementById('tab-cost-content').classList.toggle('active', tab === 'cost');
+      const tabPlansContent = document.getElementById('tab-plans-content');
+      if (tabPlansContent) tabPlansContent.classList.toggle('active', tab === 'plans');
       
       if (tab === 'cost') {
         runCostSimulation();
+      } else if (tab === 'plans') {
+        renderCityPlans();
       }
     }
 
@@ -59119,6 +60061,8 @@ const COST_DB = {
       
       document.getElementById('tab-forecast-btn').textContent = t.tabForecast;
       document.getElementById('tab-cost-btn').textContent = t.tabCost;
+      const tabPlansBtn = document.getElementById('tab-plans-btn');
+      if (tabPlansBtn) tabPlansBtn.textContent = t.tabPlans;
       
       metricHeaderDemand.textContent = t.metricDemand;
       metricHeaderCapacity.textContent = t.metricCapacity;
@@ -59217,6 +60161,28 @@ const COST_DB = {
       if (lblPaid) lblPaid.textContent = t.lblSimSubPaid;
       if (lblRev) lblRev.textContent = t.lblSimSubRev;
       if (lblSavings) lblSavings.textContent = t.lblSimSubSavings;
+
+      // Translate plans tab elements
+      const plansLblCityStats = document.getElementById('plans-lbl-city-stats');
+      if (plansLblCityStats) plansLblCityStats.textContent = t.plansLblCityStats;
+      const plansLblActiveHours = document.getElementById('plans-lbl-active-hours');
+      if (plansLblActiveHours) plansLblActiveHours.textContent = t.plansLblActiveHours;
+      const plansLblHourlyCost = document.getElementById('plans-lbl-hourly-cost');
+      if (plansLblHourlyCost) plansLblHourlyCost.textContent = t.plansLblHourlyCost;
+      const plansLblTph = document.getElementById('plans-lbl-tph');
+      if (plansLblTph) plansLblTph.textContent = t.plansLblTph;
+      const plansLblKph = document.getElementById('plans-lbl-kph');
+      if (plansLblKph) plansLblKph.textContent = t.plansLblKph;
+      const plansLblMixTitle = document.getElementById('plans-lbl-mix-title');
+      if (plansLblMixTitle) plansLblMixTitle.textContent = t.plansLblMixTitle;
+      const plansLblStepsTitle = document.getElementById('plans-lbl-steps-title');
+      if (plansLblStepsTitle) plansLblStepsTitle.textContent = t.plansLblStepsTitle;
+      const plansLblStepsSubtitle = document.getElementById('plans-lbl-steps-subtitle');
+      if (plansLblStepsSubtitle) plansLblStepsSubtitle.textContent = t.plansLblStepsSubtitle;
+
+      if (activeTab === 'plans') {
+        renderCityPlans();
+      }
     }
 
     function initDashboard() {
@@ -59487,6 +60453,63 @@ const COST_DB = {
       generateStaffingRecommendation(netSurplusVal, totalShortageSlots, peakShortages, totalSurplusVolume);
       renderGrid();
       renderHiringPlanTable();
+      if (activeTab === 'plans') {
+        renderCityPlans();
+      }
+    }
+
+    function renderCityPlans() {
+      const cityData = CITY_PLANS[currentCity];
+      if (!cityData) {
+        document.getElementById('plans-val-active-hours').textContent = '0 h';
+        document.getElementById('plans-val-hourly-cost').textContent = '0.00 EUR/h';
+        document.getElementById('plans-val-tph').textContent = '0.00';
+        document.getElementById('plans-val-kph').textContent = '0.00 km/h';
+        document.getElementById('plans-mix-list').innerHTML = '<div style="color: var(--text-muted); font-size: 13.5px;">No plan data available for this city.</div>';
+        document.getElementById('plans-steps-container').innerHTML = '';
+        return;
+      }
+
+      document.getElementById('plans-val-active-hours').textContent = `${cityData.hours.toLocaleString()} h`;
+      document.getElementById('plans-val-hourly-cost').textContent = `${cityData.cost.toFixed(2)} EUR/h`;
+      document.getElementById('plans-val-tph').textContent = cityData.tph.toFixed(2);
+      document.getElementById('plans-val-kph').textContent = `${cityData.kph.toFixed(2)} km/h`;
+
+      const mixList = document.getElementById('plans-mix-list');
+      mixList.innerHTML = '';
+      cityData.structure.forEach(item => {
+        const text = currentLang === 'ro' ? item.ro : item.en;
+        const div = document.createElement('div');
+        div.className = 'checklist-item';
+        div.style.background = 'rgba(0,0,0,0.015)';
+        div.style.padding = '8px 12px';
+        div.style.borderRadius = '8px';
+        div.style.borderLeft = '4px solid var(--accent-color)';
+        div.style.fontSize = '13.5px';
+        div.innerHTML = `<span style="font-family: var(--font-mono);">${text}</span>`;
+        mixList.appendChild(div);
+      });
+
+      const stepsContainer = document.getElementById('plans-steps-container');
+      stepsContainer.innerHTML = '';
+      cityData.steps.forEach((step, idx) => {
+        const title = currentLang === 'ro' ? step.title_ro : step.title_en;
+        const desc = currentLang === 'ro' ? step.desc_ro : step.desc_en;
+        
+        const item = document.createElement('div');
+        item.className = 'checklist-item';
+        item.style.alignItems = 'flex-start';
+        item.style.gap = '12px';
+        
+        item.innerHTML = `
+          <input type="checkbox" class="checklist-checkbox" id="plans-checkbox-${idx}" style="margin-top: 4px;" checked>
+          <div class="checklist-text" style="display: flex; flex-direction: column; gap: 4px;">
+            <strong style="color: var(--text-main); font-size: 14.5px;">${idx + 1}. ${title}</strong>
+            <span style="color: var(--text-muted); font-size: 13px; line-height: 1.4;">${desc}</span>
+          </div>
+        `;
+        stepsContainer.appendChild(item);
+      });
     }
 
     function generateStaffingRecommendation(netSurplus, shortageSlots, peakShortages, totalSurplusVolume) {
