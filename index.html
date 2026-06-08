@@ -1294,41 +1294,44 @@
       </div>
     </div>
 
-    <!-- Layout: Stacked Full Width Rows -->
-    <div style="display: flex; flex-direction: column; gap: 24px;">
-      
-      <!-- Current Contract Mix -->
-      <div class="metric-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
-        <div class="checklist-title" id="plans-lbl-mix-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--text-main); border-bottom: 2px solid var(--accent-color); padding-bottom: 8px;">🚗 Current Contract & Vehicle Structure</div>
-        <div id="plans-mix-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px;">
-          <!-- Filled dynamically in JS -->
+    <!-- Row 2: Contract Structure Mix & Action Checklist -->
+    <div class="cost-tab-layout">
+      <!-- Left Column: Sidebar -->
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 24px;">
+        <div class="metric-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column;">
+          <div class="checklist-title" id="plans-lbl-mix-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--text-main); border-bottom: 2px solid var(--accent-color); padding-bottom: 8px;">🚗 Current Contract & Vehicle Structure</div>
+          <div id="plans-mix-list" style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Filled dynamically in JS -->
+          </div>
         </div>
       </div>
 
-      <!-- Restructuring Action Plan -->
-      <div class="metric-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
-        <div class="checklist-title" id="plans-lbl-steps-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--text-main); border-bottom: 2px solid var(--accent-color); padding-bottom: 8px;">🛠️ Restructuring Action Plan ("What to do & How to fix it")</div>
-        <div style="margin-bottom: 16px; font-size: 13.5px; color: var(--text-muted); line-height: 1.5;" id="plans-lbl-steps-subtitle">
-          Follow the checklist below to optimize the fleet capacity, eliminate non-compliant contract models, and achieve the target hourly cost of ≤ 22.50 EUR/hour.
+      <!-- Right Column: Action Plan & Reductions -->
+      <div style="flex: 1.2; display: flex; flex-direction: column; gap: 24px;">
+        
+        <div class="metric-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+          <div class="checklist-title" id="plans-lbl-steps-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--text-main); border-bottom: 2px solid var(--accent-color); padding-bottom: 8px;">🛠️ Restructuring Action Plan ("What to do & How to fix it")</div>
+          <div style="margin-bottom: 16px; font-size: 13.5px; color: var(--text-muted); line-height: 1.5;" id="plans-lbl-steps-subtitle">
+            Follow the checklist below to optimize the fleet capacity, eliminate non-compliant contract models, and achieve the target hourly cost of ≤ 22.50 EUR/hour.
+          </div>
+          <div class="checklist-container" id="plans-steps-container" style="border: none; padding: 0; background: transparent; display: flex; flex-direction: column; gap: 16px;">
+            <!-- Filled dynamically in JS -->
+          </div>
         </div>
-        <div class="checklist-container" id="plans-steps-container" style="border: none; padding: 0; background: transparent; display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 16px;">
-          <!-- Filled dynamically in JS -->
-        </div>
-      </div>
 
-      <!-- Actionable Reductions -->
-      <div class="metric-card" style="background: var(--card-bg); border: 1px solid var(--color-red-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(220, 38, 38, 0.1); border-left: 6px solid var(--color-red-border);">
-        <div class="checklist-title" id="plans-lbl-reductions-title" style="margin-bottom: 12px; font-size: 22px; font-weight: 800; color: var(--color-red-text); border-bottom: 2px solid rgba(220, 38, 38, 0.2); padding-bottom: 8px;">🛑 Actionable Courier Reductions & Transitions</div>
-        <div style="font-size: 15px; color: var(--text-muted); margin-bottom: 24px;" id="plans-lbl-reductions-sub">
-          Dismiss inefficient contracts and transition drivers to E-bikes to achieve cost compliance.
+        <!-- Actionable Reductions (Moved to Right Column so it's wide and directly below Action Plan) -->
+        <div class="metric-card" style="background: var(--card-bg); border: 1px solid var(--color-red-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(220, 38, 38, 0.1); border-left: 6px solid var(--color-red-border);">
+          <div class="checklist-title" id="plans-lbl-reductions-title" style="margin-bottom: 12px; font-size: 22px; font-weight: 800; color: var(--color-red-text); border-bottom: 2px solid rgba(220, 38, 38, 0.2); padding-bottom: 8px;">🛑 Actionable Courier Reductions & Transitions</div>
+          <div style="font-size: 15px; color: var(--text-muted); margin-bottom: 24px;" id="plans-lbl-reductions-sub">
+            Dismiss inefficient contracts and transition drivers to E-bikes to achieve cost compliance.
+          </div>
+          <div id="plans-reductions-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+            <!-- Filled dynamically in JS -->
+          </div>
         </div>
-        <div id="plans-reductions-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
-          <!-- Filled dynamically in JS -->
-        </div>
-      </div>
 
+      </div>
     </div>
-  </div>
 
   <script>
     const CITY_PLANS = {
