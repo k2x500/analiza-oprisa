@@ -1296,11 +1296,23 @@
 
     <!-- Row 2: Contract Structure Mix & Action Checklist -->
     <div class="cost-tab-layout">
-      <!-- Left Column: Current Structure Mix -->
-      <div class="metric-card" style="flex: 1; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column;">
-        <div class="checklist-title" id="plans-lbl-mix-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--text-main); border-bottom: 2px solid var(--accent-color); padding-bottom: 8px;">🚗 Current Contract & Vehicle Structure</div>
-        <div id="plans-mix-list" style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
-          <!-- Filled dynamically in JS -->
+      <!-- Left Column: Current Structure Mix & Actionable Reductions -->
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 24px;">
+        <div class="metric-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column;">
+          <div class="checklist-title" id="plans-lbl-mix-title" style="margin-bottom: 16px; font-size: 18px; font-weight: 700; color: var(--text-main); border-bottom: 2px solid var(--accent-color); padding-bottom: 8px;">🚗 Current Contract & Vehicle Structure</div>
+          <div id="plans-mix-list" style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Filled dynamically in JS -->
+          </div>
+        </div>
+
+        <div class="metric-card" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; border-left: 4px solid var(--color-red-border);">
+          <div class="checklist-title" id="plans-lbl-reductions-title" style="margin-bottom: 12px; font-size: 18px; font-weight: 700; color: var(--color-red-text); border-bottom: 2px solid var(--color-red-border); padding-bottom: 8px;">🛑 Actionable Courier Reductions & Transitions</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;" id="plans-lbl-reductions-sub">
+            Dismiss inefficient contracts and transition drivers to E-bikes to achieve cost compliance.
+          </div>
+          <div id="plans-reductions-list" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Filled dynamically in JS -->
+          </div>
         </div>
       </div>
 
@@ -59636,6 +59648,14 @@ const COST_DB = {
         plansLblStepsSubtitle: "Follow the checklist below to optimize the fleet capacity, eliminate non-compliant contract models, and achieve the target hourly cost of ≤ 22.50 EUR/hour.",
         plansLblNoteTitle: "💡 How to read these hiring targets (Non-Additive):",
         plansLblNoteBody: "These numbers represent the peak concurrent deficit for each week. They are <strong>cumulative (up to), not additive (new)</strong>. For example, if Week 1 requires +65 couriers and Week 2 requires +100, you do <strong>not</strong> hire 165. You hire 65 in Week 1, and then hire 35 more in Week 2 to reach the peak of 100 active couriers. If a subsequent week requires fewer (e.g. +50), your existing pool is fully sufficient.",
+        plansLblReductionsTitle: "🛑 Actionable Courier Reductions & Transitions",
+        plansLblReductionsSub: "Dismiss inefficient contracts and transition drivers to E-bikes to achieve cost compliance.",
+        plansReductionsNone: "All active contracts are cost-compliant (≤ 22.50 EUR/h). No immediate reductions required.",
+        plansReductionsMinijob: "<strong>Dismiss/Transition Minijob ({vehicle})</strong>: Remove <strong>{drivers}</strong> active couriers (cost exceeds 25 EUR/h).",
+        plansReductionsTZCar: "<strong>Transition Teilzeit on Car</strong>: Transition or lay off <strong>{drivers}</strong> couriers from Car to E-bike (mileage cost exceeds compliance).",
+        plansReductionsTZBike: "<strong>Reduce/Transition Teilzeit ({vehicle})</strong>: Transition <strong>{drivers}</strong> couriers to Werkstudent contracts to reach ≤ 22.50 EUR/h.",
+        plansReductionsWSCar: "<strong>Transition Werkstudent on Car</strong>: Transition <strong>{drivers}</strong> couriers from Car to E-bike to lower mileage expenses.",
+        plansReductionsUnknown: "<strong>Audit/Dismiss Untracked Pool</strong>: Audit or convert <strong>{drivers}</strong> untracked couriers to compliant structures.",
         
         // Warning banner
         warningBanner: "⚠️ June Forecast not uploaded for {city}. Dashboard displays simulated forecast by scaling Berlin's profile (factor: {factor}%).",
@@ -59831,6 +59851,14 @@ const COST_DB = {
         plansLblStepsSubtitle: "Urmați lista de verificare de mai jos pentru a optimiza capacitatea flotei, a elimina modelele de contract neconforme și a atinge costul orar țintă de ≤ 22.50 EUR/oră.",
         plansLblNoteTitle: "💡 Cum se interpretează aceste ținte de recrutare (Ne-Aditive):",
         plansLblNoteBody: "Aceste cifre reprezintă deficitul maxim în paralel pentru fiecare săptămână. Ele sunt <strong>cumulative (până la), nu aditive (noi)</strong>. De exemplu, dacă Săptămâna 1 are un deficit de +65 curieri, iar Săptămâna 2 de +100, <strong>nu</strong> angajați 165 de oameni. Angajați 65 în Săptămâna 1, apoi încă 35 în Săptămâna 2 pentru a atinge vârful de 100 de curieri activi în paralel. Dacă o săptămână ulterioară are un deficit mai mic (de ex. +50), personalul pe care îl aveți deja este pe deplin suficient.",
+        plansLblReductionsTitle: "🛑 Reduceri și Tranziții de Curieri (Concedieri / Conversii)",
+        plansLblReductionsSub: "Concediați contractele neconforme și mutați șoferii pe Biciclete Electrice pentru a atinge ținta de cost.",
+        plansReductionsNone: "Toate contractele active sunt conforme din punct de vedere al costului (≤ 22.50 EUR/h). Nu sunt necesare reduceri imediate.",
+        plansReductionsMinijob: "<strong>Eliminare/Concediere Minijob ({vehicle})</strong>: Concediați <strong>{drivers}</strong> curieri activi (costul depășește 25 EUR/h).",
+        plansReductionsTZCar: "<strong>Tranziție Teilzeit pe Mașină</strong>: Mutați sau concediați <strong>{drivers}</strong> curieri de pe Mașină pe Bicicletă Electrică (uzura/km depășește conformitatea).",
+        plansReductionsTZBike: "<strong>Reducere/Tranziție Teilzeit ({vehicle})</strong>: Transferați <strong>{drivers}</strong> curieri de pe Teilzeit pe contracte de Werkstudent pentru a atinge ≤ 22.50 EUR/h.",
+        plansReductionsWSCar: "<strong>Tranziție Werkstudent pe Mașină</strong>: Transferați <strong>{drivers}</strong> curieri de pe Mașină pe Bicicletă Electrică pentru a reduce decontul de km.",
+        plansReductionsUnknown: "<strong>Audit/Eliminare Pool Neidentificat</strong>: Auditați sau convertiți <strong>{drivers}</strong> curieri din pool-ul de contracte 'Unknown'.",
         
         // Warning banner
         warningBanner: "⚠️ Prognoza pentru Iunie nu a fost încărcată pentru {city}. Tabloul de bord afișează prognoza simulată prin scalarea profilului Berlinului (factor: {factor}%).",
@@ -60251,6 +60279,10 @@ const COST_DB = {
       if (plansLblNoteTitle) plansLblNoteTitle.innerHTML = t.plansLblNoteTitle;
       const plansLblNoteBody = document.getElementById('plans-lbl-note-body');
       if (plansLblNoteBody) plansLblNoteBody.innerHTML = t.plansLblNoteBody;
+      const plansLblReductionsTitle = document.getElementById('plans-lbl-reductions-title');
+      if (plansLblReductionsTitle) plansLblReductionsTitle.textContent = t.plansLblReductionsTitle;
+      const plansLblReductionsSub = document.getElementById('plans-lbl-reductions-sub');
+      if (plansLblReductionsSub) plansLblReductionsSub.textContent = t.plansLblReductionsSub;
 
       if (activeTab === 'plans') {
         renderCityPlans();
@@ -60695,6 +60727,80 @@ const COST_DB = {
         `;
         stepsContainer.appendChild(item);
       });
+
+      // 6. Populate Actionable Reductions
+      const reductionsContainer = document.getElementById('plans-reductions-list');
+      if (reductionsContainer) {
+        reductionsContainer.innerHTML = '';
+        const t = TRANSLATIONS[currentLang];
+        
+        // Access the raw cost database for this city to get driver counts
+        const rawCityData = COST_DB[currentCity];
+        if (rawCityData && rawCityData.mix) {
+          const nonCompliantMixes = rawCityData.mix.filter(item => item.cost_hour > 22.50);
+          
+          if (nonCompliantMixes.length === 0) {
+            reductionsContainer.innerHTML = `
+              <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 8px; padding: 12px; font-size: 13.5px; color: var(--color-green-text); font-weight: 500;">
+                ${t.plansReductionsNone}
+              </div>
+            `;
+          } else {
+            nonCompliantMixes.forEach(item => {
+              const drivers = item.drivers;
+              const contract = item.contract;
+              const vehicle = item.vehicle === 'Bicycle' ? (currentLang === 'ro' ? 'Bicicletă' : 'Bicycle') : (currentLang === 'ro' ? 'Mașină' : 'Car');
+              
+              let message = '';
+              let isCrit = false;
+              
+              if (contract.includes('Minijob')) {
+                message = t.plansReductionsMinijob.replace('{drivers}', drivers).replace('{vehicle}', vehicle);
+                isCrit = true;
+              } else if (contract.includes('Teilzeit') || contract.includes('TZ')) {
+                if (item.vehicle === 'Car') {
+                  message = t.plansReductionsTZCar.replace('{drivers}', drivers);
+                  isCrit = true;
+                } else {
+                  message = t.plansReductionsTZBike.replace('{drivers}', drivers).replace('{vehicle}', vehicle);
+                  isCrit = false;
+                }
+              } else if (contract.includes('Werkstudent') && item.vehicle === 'Car') {
+                message = t.plansReductionsWSCar.replace('{drivers}', drivers);
+                isCrit = false;
+              } else if (contract.includes('Unknown')) {
+                message = t.plansReductionsUnknown.replace('{drivers}', drivers);
+                isCrit = true;
+              } else {
+                message = `<strong>Restructure ${contract} (${vehicle})</strong>: Restructure <strong>${drivers}</strong> active drivers (hourly cost: ${item.cost_hour.toFixed(2)} EUR/h exceeds limit).`;
+              }
+              
+              const div = document.createElement('div');
+              div.className = 'checklist-item';
+              div.style.background = isCrit ? 'rgba(239, 68, 68, 0.03)' : 'rgba(245, 158, 11, 0.03)';
+              div.style.border = isCrit ? '1px solid rgba(239, 68, 68, 0.15)' : '1px solid rgba(245, 158, 11, 0.15)';
+              div.style.padding = '10px 14px';
+              div.style.borderRadius = '8px';
+              div.style.fontSize = '13.5px';
+              div.style.display = 'flex';
+              div.style.gap = '10px';
+              div.style.alignItems = 'center';
+              
+              const bullet = document.createElement('span');
+              bullet.innerHTML = isCrit ? '❌' : '⚠️';
+              bullet.style.fontSize = '16px';
+              
+              const textSpan = document.createElement('span');
+              textSpan.style.color = 'var(--text-main)';
+              textSpan.innerHTML = message;
+              
+              div.appendChild(bullet);
+              div.appendChild(textSpan);
+              reductionsContainer.appendChild(div);
+            });
+          }
+        }
+      }
     }
 
     function generateStaffingRecommendation(netSurplus, shortageSlots, peakShortages, totalSurplusVolume) {
