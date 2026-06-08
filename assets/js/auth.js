@@ -1,7 +1,7 @@
 const SUPABASE_URL = 'https://ecgeikpxjjcgqpkwglhf.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjZ2Vpa3B4ampjZ3Fwa3dnbGhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDAzNTIsImV4cCI6MjA5NTkxNjM1Mn0.EiqsAEPdDJHLCMfewFux4CIBKWduvAQ_f76WYBSZEHo';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // State
 let isLoginMode = true;
@@ -63,23 +63,23 @@ if(form) {
         submitBtn.textContent = 'Processing...';
         
         if (isLoginMode) {
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
             if (error) {
                 showError(error.message);
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Sign In';
             } else {
                 // Check profile status
-                const { data: profile } = await supabase.from('profiles').select('status, role').eq('id', data.user.id).single();
+                const { data: profile } = await supabaseClient.from('profiles').select('status, role').eq('id', data.user.id).single();
                 
                 if (profile && profile.status === 'pending') {
                     showError('Your account is pending admin approval.');
-                    await supabase.auth.signOut();
+                    await supabaseClient.auth.signOut();
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Sign In';
                 } else if (profile && profile.status === 'rejected') {
                     showError('Your account has been rejected.');
-                    await supabase.auth.signOut();
+                    await supabaseClient.auth.signOut();
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Sign In';
                 } else {
@@ -88,7 +88,7 @@ if(form) {
                 }
             }
         } else {
-            const { data, error } = await supabase.auth.signUp({ email, password });
+            const { data, error } = await supabaseClient.auth.signUp({ email, password });
             if (error) {
                 showError(error.message);
             } else {
@@ -104,9 +104,9 @@ if(form) {
 // Check session on load
 window.addEventListener('DOMContentLoaded', async () => {
     if(window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) {
-        const { data } = await supabase.auth.getSession();
+        const { data } = await supabaseClient.auth.getSession();
         if (data.session) {
-            const { data: profile } = await supabase.from('profiles').select('status').eq('id', data.session.user.id).single();
+            const { data: profile } = await supabaseClient.from('profiles').select('status').eq('id', data.session.user.id).single();
             if (profile && profile.status === 'approved') {
                 window.location.href = 'dashboard.html';
             }

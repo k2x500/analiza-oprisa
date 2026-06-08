@@ -1,7 +1,7 @@
 const SUPABASE_URL = 'https://ecgeikpxjjcgqpkwglhf.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjZ2Vpa3B4ampjZ3Fwa3dnbGhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNDAzNTIsImV4cCI6MjA5NTkxNjM1Mn0.EiqsAEPdDJHLCMfewFux4CIBKWduvAQ_f76WYBSZEHo';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentUser = null;
 let currentProfile = null;
@@ -38,7 +38,7 @@ navItems.forEach(item => {
 
 async function updatePresence() {
     if (!currentUser) return;
-    await supabase.from('profiles').update({ 
+    await supabaseClient.from('profiles').update({ 
         last_seen: new Date().toISOString(),
         is_online: true 
     }).eq('id', currentUser.id);
@@ -46,7 +46,7 @@ async function updatePresence() {
 
 // Setup Session & Protection
 window.addEventListener('DOMContentLoaded', async () => {
-    const { data } = await supabase.auth.getSession();
+    const { data } = await supabaseClient.auth.getSession();
     
     if (!data.session) {
         window.location.href = 'index.html';
@@ -56,11 +56,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     currentUser = data.session.user;
     
     // Fetch profile
-    const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', currentUser.id).single();
     
     if (!profile || profile.status !== 'approved') {
         // Kick them out if not approved
-        await supabase.auth.signOut();
+        await supabaseClient.auth.signOut();
         window.location.href = 'index.html';
         return;
     }
@@ -86,10 +86,10 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 logoutBtn.addEventListener('click', async () => {
     if (currentUser) {
-        await supabase.from('profiles').update({ is_online: false }).eq('id', currentUser.id);
+        await supabaseClient.from('profiles').update({ is_online: false }).eq('id', currentUser.id);
     }
     clearInterval(heartbeatInterval);
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
     window.location.href = 'index.html';
 });
 
@@ -97,7 +97,7 @@ logoutBtn.addEventListener('click', async () => {
 async function loadAdminUsers() {
     if (currentProfile?.role !== 'admin') return;
     
-    const { data: users, error } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+    const { data: users, error } = await supabaseClient.from('profiles').select('*').order('created_at', { ascending: false });
     if (error) {
         console.error(error);
         return;
@@ -140,7 +140,7 @@ async function loadAdminUsers() {
 
 window.updateUserStatus = async function(userId, newStatus) {
     if (currentProfile?.role !== 'admin') return;
-    await supabase.from('profiles').update({ status: newStatus }).eq('id', userId);
+    await supabaseClient.from('profiles').update({ status: newStatus }).eq('id', userId);
     loadAdminUsers();
 };
 
