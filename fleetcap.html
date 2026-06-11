@@ -60565,13 +60565,22 @@ const COST_DB = {
       });
 
       let maxDeficitDrivers = 0;
+      const dailyDeficits = {};
+      WEEKDAYS.forEach(d => { dailyDeficits[d] = { peak: 0, hours: 0 }; });
       if (peakShortages.length > 0) {
         peakShortages.forEach(p => {
-          if (p.drvNeeded > maxDeficitDrivers) {
-            maxDeficitDrivers = p.drvNeeded;
+          if (p.drvNeeded > dailyDeficits[p.day].peak) {
+            dailyDeficits[p.day].peak = p.drvNeeded;
           }
+          dailyDeficits[p.day].hours += p.drvNeeded * 0.5;
         });
       }
+      WEEKDAYS.forEach(d => {
+        const studentsForDay = Math.max(dailyDeficits[d].peak, Math.ceil(dailyDeficits[d].hours / 4));
+        if (studentsForDay > maxDeficitDrivers) {
+          maxDeficitDrivers = studentsForDay;
+        }
+      });
 
       statForecastDemand.textContent = totalForecastDemand.toLocaleString();
       statEstimatedCapacity.textContent = Math.round(totalEstimatedCapacity).toLocaleString();
@@ -60675,6 +60684,8 @@ const COST_DB = {
           cityForecasts.forEach((week, wIdx) => {
             let maxDeficitDrivers = 0;
             WEEKDAYS.forEach(day => {
+              let dailyPeak = 0;
+              let dailyHours = 0;
               TIME_SLOTS.forEach(slot => {
                 const demand = getForecastDemand(currentCity, wIdx, day, slot);
                 const active = getActiveDrivers(currentCity, day, slot);
@@ -60682,11 +60693,16 @@ const COST_DB = {
                 const deficit = demand - capacity;
                 if (deficit > 0) {
                   const driversNeeded = Math.ceil(deficit / p30);
-                  if (driversNeeded > maxDeficitDrivers) {
-                    maxDeficitDrivers = driversNeeded;
+                  if (driversNeeded > dailyPeak) {
+                    dailyPeak = driversNeeded;
                   }
+                  dailyHours += driversNeeded * 0.5;
                 }
               });
+              const studentsForDay = Math.max(dailyPeak, Math.ceil(dailyHours / 4));
+              if (studentsForDay > maxDeficitDrivers) {
+                maxDeficitDrivers = studentsForDay;
+              }
             });
 
             const monDate = week.days['Monday'].date;
@@ -61007,6 +61023,8 @@ const COST_DB = {
         let maxDeficitDrivers = 0;
         
         WEEKDAYS.forEach(day => {
+          let dailyPeak = 0;
+          let dailyHours = 0;
           TIME_SLOTS.forEach(slot => {
             const demand = getForecastDemand(currentCity, wIdx, day, slot);
             const active = getActiveDrivers(currentCity, day, slot);
@@ -61014,11 +61032,16 @@ const COST_DB = {
             const deficit = demand - capacity;
             if (deficit > 0) {
               const driversNeeded = Math.ceil(deficit / p30);
-              if (driversNeeded > maxDeficitDrivers) {
-                maxDeficitDrivers = driversNeeded;
+              if (driversNeeded > dailyPeak) {
+                dailyPeak = driversNeeded;
               }
+              dailyHours += driversNeeded * 0.5;
             }
           });
+          const studentsForDay = Math.max(dailyPeak, Math.ceil(dailyHours / 4));
+          if (studentsForDay > maxDeficitDrivers) {
+            maxDeficitDrivers = studentsForDay;
+          }
         });
         
         const monDate = week.days['Monday'].date;
